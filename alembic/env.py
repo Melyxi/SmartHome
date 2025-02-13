@@ -19,13 +19,17 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from core.models import account, device, protocol, state
+from core.models import account, device, protocol, state, button
 
 targets_metadata = [account.User.metadata,
                     protocol.Protocol.metadata,
                     state.State.metadata,
-                    device.Device.metadata,
-                    device.device_state_association.metadata]
+                    button.MetaButton.metadata,
+                    button.Button.metadata,
+                    button.button_state_association.metadata,
+                    device.device_button_association.metadata,
+                    device.Device.metadata
+                    ]
 
 # target_metadata = None
 

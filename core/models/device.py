@@ -7,11 +7,11 @@ from sqlalchemy import Integer
 import uuid
 
 
-device_state_association = Table(
-    "device_states",
+device_button_association = Table(
+    "device_buttons",
     db.Base.metadata,
     Column("device_id", Integer, ForeignKey("devices.id"), primary_key=True),
-    Column("state_id", Integer, ForeignKey("states.id"), primary_key=True)
+    Column("button_id", Integer, ForeignKey("buttons.id"), primary_key=True)
 )
 
 
@@ -28,9 +28,9 @@ class Device(db.Base):
     protocol_id = Column(Integer, ForeignKey("protocols.id"), nullable=False)
     protocol = relationship("Protocol", back_populates="devices")
 
-    states = relationship(
-        "State",
-        secondary=device_state_association,
+    buttons = relationship(
+        "Button",
+        secondary=device_button_association,
         back_populates="devices"
     )
     created_at = Column(DateTime, default=func.now(), nullable=False)
