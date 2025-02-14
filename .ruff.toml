@@ -1,0 +1,92 @@
+# Official website https://docs.astral.sh/ruff/
+# This config for Ruff v.0.5.1+
+
+line-length = 120
+target-version = "py38"
+exclude = [
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    "migrations",
+    "frontend",
+    "unittest_media",
+    "media",
+]
+
+[lint]
+# Все правила доступные по ссылке: https://docs.astral.sh/ruff/rules/
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "B",      # flake8-bugbear
+    "I",      # isort
+    "RUF",    # Ruff-specific rules
+    "UP",     # pyupgrade
+    "N",      # pep8-naming
+    "A",      # flake8-builtins
+    "COM",    # flake8-commas
+    "C4",     # flake8-comprehensions
+    "DJ001",  # flake8-django
+    "RSE",    # flake8-raise
+    "SIM",    # flake8-simplify
+    "ISC",    # flake8-implicit-str-concat
+    "TID252", # flake8-tidy-imports
+    "PGH004", # pygrep-hooks
+]
+
+ignore = [
+    # Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
+    # Очень сомнительное правило, особенно в API, когда нужно вернуть ошибку
+    "B904",
+
+    # String contains ambiguous {}. Did you mean {}?
+    # В строках с кириллицей и латиницей предлагает заместо кириллических букв использовать латинские аналоги
+    "RUF001",
+
+    # Docstring contains ambiguous {}. Did you mean {}?
+    # В докстрингах с кириллицей и латиницей предлагает заместо кириллических букв использовать латинские аналоги
+    "RUF002",
+
+    # Comment contains ambiguous {}. Did you mean {}?
+    # В комментариях с кириллицей и латиницей предлагает заместо кириллических букв использовать латинские аналоги
+    "RUF003",
+
+    # Consider {expr} instead of concatenation
+    # Предлагает везде использовать таплы с распаковкой за место конкатенации (зачастую неуместно):
+    # fields = (*SomeResource.fields, fields.IdField())
+    "RUF005",
+
+    # https://docs.astral.sh/ruff/rules/mutable-class-default/
+    # Просит типизировать и завернуть в ClassVar все атрибуты класса с изменяемыми значениями: list, dict, set
+    # Плохо сочетается с DSL основанными на классах: Django ORM, ApiResource, ApiCollection, и просто много шумит
+    "RUF012",
+
+    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
+    # Variable {name} is shadowing a Python builtin
+    # В django-формах используются имена полей, похожие на builtins функции (`type`, `property` и тд) и в `APIResource`
+    "A003",
+
+    # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
+    # Argument {name} is shadowing a Python builtin
+    "A002",
+
+    # https://docs.astral.sh/ruff/rules/missing-trailing-comma/
+    # Вызывает предупреждение при использовании форматера. Добавлено до исправления проблемы
+    # https://github.com/astral-sh/ruff/issues/9216
+    "COM812",
+
+    # https://docs.astral.sh/ruff/rules/subprocess-without-shell-equals-true/
+    # Противоречивая штука, т.к. есть конфлит между правилами S603 & S602
+    # https://github.com/astral-sh/ruff/issues/4045
+    "S603",
+]
+
+[lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+
+[format]
+# Следующие параметры установлены по умолчанию, но указаны явно, чтобы избежать неясности
+quote-style = "double"
+indent-style = "space"
