@@ -32,12 +32,9 @@ def sqlalchemy_engine_options() -> dict:
 
 
 class SQLA:
-    # engine = create_async_engine(settings.get("DATABASE_URL"), echo=True,
-    #                              execution_options=sqlalchemy_engine_options())
-    print(f'\n########{settings.get("DATABASE_URL")=}########')
-    engine = create_async_engine(
-        "postgresql+asyncpg://report_me_user_1:qqqwww12!@127.0.0.1:5432/new_project", echo=True
-    )
+    engine = create_async_engine(settings.get("DATABASE_URL"), echo=True,
+                                  execution_options=sqlalchemy_engine_options())
+
     Base = declarative_base()
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
