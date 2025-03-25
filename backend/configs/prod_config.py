@@ -1,4 +1,4 @@
-from backend.configs.base_config import Settings
+from configs.base_config import Settings
 
 
 class ProdSettings(Settings):

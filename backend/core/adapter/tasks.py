@@ -1,6 +1,5 @@
-# main.py
-from backend.core.adapter.transmitter import ClientTransmitter
-from backend.configs.config import settings
+from core.adapter.transmitter import ClientTransmitter
+from configs.config import settings
 
 
 async def startup_event(app):

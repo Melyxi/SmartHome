@@ -1,4 +1,4 @@
-from backend.core.adapter.transmitter import ClientTransmitter
+from core.adapter.transmitter import ClientTransmitter
 
 
 class TransmitterFactory:

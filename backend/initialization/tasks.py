@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from backend.apps.domain.devices.task import sync_create_devices
+from apps.domain.devices.task import sync_create_devices
 from core.adapter.tasks import startup_event, shutdown_event
 
 startup_tasks = [sync_create_devices, startup_event]

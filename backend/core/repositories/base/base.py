@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Generic, get_args
 
-from backend.core.extensions import db
+from core.extensions import db
 from core.repositories.types import T
 
 

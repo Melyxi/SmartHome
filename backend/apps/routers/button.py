@@ -10,7 +10,7 @@ from core.adapter.transmitter_interface import ClientInterface
 from core.dependencies.transmitter import get_transmitter
 from utils import json
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.core.dependencies.db import get_session
+from core.dependencies.db import get_session
 
 state_router = APIRouter()
 

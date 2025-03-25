@@ -3,10 +3,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
-from backend.configs.config import settings
-from backend.core.db.utils import make_url_safe
+from configs.config import settings
+from core.db.utils import make_url_safe
 
-from backend.core.configurate_logging import get_logger
+from core.configurate_logging import get_logger
 
 logger = get_logger("server")
 
