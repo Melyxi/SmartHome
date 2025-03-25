@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.domain.devices.device import DeviceService
-from backend.apps.repositories.device import DeviceSqlAlchemyRepository
-from backend.core.dependencies.db import get_session
+from apps.repositories.device import DeviceSqlAlchemyRepository
+from core.dependencies.db import get_session
 
 devices_router = APIRouter()
 

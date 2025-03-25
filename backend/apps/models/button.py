@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pydantic.v1 import BaseModel
 
-from backend.apps.models.state import GetState
+from apps.models.state import GetState
 
 
 class GetMetaButton(BaseModel):

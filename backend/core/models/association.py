@@ -1,8 +1,7 @@
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, ForeignKey, Table
+from sqlalchemy import Integer
+
 from core.extensions import db
-from sqlalchemy import Column, UUID, DateTime, func, ForeignKey, Table
-from sqlalchemy import String, Integer
-import uuid
 
 device_button_association = Table(
     "device_buttons",

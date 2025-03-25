@@ -2,8 +2,8 @@ import os
 
 from pydantic.v1 import Field
 
-from backend.configs.base_config import Settings
-from backend.core.logging.logging_configurate_logging import LoggingDefaultLoggingConfigurator
+from configs.base_config import Settings
+from core.logging.logging_configurate_logging import LoggingDefaultLoggingConfigurator
 
 
 class DevSettings(Settings):

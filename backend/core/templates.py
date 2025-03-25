@@ -5,10 +5,9 @@ device_html = """
         <h5 class="card-title">{{ device.name }}</h5>
         <p class="card-text">{{ device.description }}</p>
             
-        {% for button in buttons %}    
-            {{ button.button_meta.html }}
-        {% endfor %}    
-            
+        {% for button in device.buttons %}    
+             {{button.meta_button.html}}
+        {% endfor %}
       </div>
     </div>
 """

@@ -6,7 +6,6 @@ import uuid
 
 from core.models.association import device_button_association
 
-# Ассоциативная таблица для Button-States
 button_state_association = Table(
     "button_states",
     db.Base.metadata,
@@ -14,10 +13,8 @@ button_state_association = Table(
     Column("state_id", Integer, ForeignKey("states.id"), primary_key=True),
     extend_existing=True
 )
-# backend/core/models/meta_button.py
 
 
-# backend/core/models/button.py
 class Button(db.Base):
     __tablename__ = "buttons"
     __table_args__ = {'extend_existing': True}

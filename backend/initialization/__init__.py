@@ -1,7 +1,7 @@
 
-from backend.configs.config import settings
-from backend.core.configurate_logging import get_logger
-from backend.core.logging.loguru_configurate_logging import DefaultLoggingConfigurator
+from configs.config import settings
+from core.configurate_logging import get_logger
+from core.logging.loguru_configurate_logging import DefaultLoggingConfigurator
 
 logger = get_logger("server")
 
@@ -11,11 +11,10 @@ class AppInitializer:
         self.app = app
 
     def init_routers(self) -> None:
-        from backend.api import router
-        from backend.apps.routers.device import devices_router
+        from apps.routers.device import devices_router
         from apps.routers.button import state_router
 
-        routers = [router, devices_router, state_router]
+        routers = [devices_router, state_router]
 
         for router in routers:
             self.app.include_router(router)

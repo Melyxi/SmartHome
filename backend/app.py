@@ -1,13 +1,10 @@
 from fastapi import FastAPI
-import os
-import sys
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from backend.initialization.middleware import initialization_middleware
-from backend.core.configurate_logging import get_logger
-from backend.initialization import AppInitializer
-from backend.initialization.tasks import initialization_tasks
-from fastapi.middleware.cors import CORSMiddleware
+
+from initialization.middleware import initialization_middleware
+from core.configurate_logging import get_logger
+from initialization import AppInitializer
+from initialization.tasks import initialization_tasks
 
 logger = get_logger("server")
 

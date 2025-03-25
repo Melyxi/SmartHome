@@ -192,7 +192,7 @@ export default {
   methods: {
     async fetchDevices() {
       try {
-        const response = await axios.get('http://192.168.1.67:8000/devices');
+        const response = await axios.get('http://0.0.0.0:8000/devices');
         this.devices = response.data; // Сохраняем полученные данные
       } catch (error) {
         console.error('Ошибка при загрузке устройств:', error);

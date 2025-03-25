@@ -113,7 +113,7 @@ methods: {
   },
   connectWebSocket() {
     // Замените URL на ваш WebSocket-сервер
-    this.socket = new WebSocket('ws://192.168.1.67:8000/button');
+    this.socket = new WebSocket('ws://0.0.0.0:8000/button');
 
     // Обработчик открытия соединения
     this.socket.onopen = () => {

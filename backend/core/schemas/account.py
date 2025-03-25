@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4, Field
+from pydantic import BaseModel, Field
 
 
 class RegistrationInput(BaseModel):

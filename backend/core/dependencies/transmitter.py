@@ -1,4 +1,4 @@
-from backend.core.adapter.transmitter_interface import ClientInterface
+from core.adapter.transmitter_interface import ClientInterface
 from fastapi import Request, WebSocket
 
 

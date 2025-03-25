@@ -2,7 +2,7 @@ from typing import List
 
 from sqlalchemy import select
 
-from backend.core.repositories.base.base import SqlRepositoryAbstract
+from core.repositories.base.base import SqlRepositoryAbstract
 from core.repositories.types import T
 
 
