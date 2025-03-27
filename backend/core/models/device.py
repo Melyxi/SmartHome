@@ -23,11 +23,25 @@ class Device(db.Base):
     protocol_id = Column(Integer, ForeignKey("protocols.id"), nullable=False)
     protocol = relationship("Protocol", back_populates="devices")
 
-    buttons = relationship(
-         "core.models.button.Button",
-         secondary=device_button_association,
-         back_populates="devices"
-     )
+    buttons = relationship("core.models.button.Button", secondary=device_button_association, back_populates="devices")
 
     created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
+
+    async def to_json(self):
+        protocol = await getattr(self, "protocol").to_json() if getattr(self, "protocol") else None
+        buttons = [await button.to_json() for button in getattr(self, "buttons", [])]
+
+        return {
+            "id": getattr(self, "id"),
+            "uuid": getattr(self, "uuid"),
+            "name": getattr(self, "name"),
+            "description": getattr(self, "description"),
+            "css": getattr(self, "css"),
+            "html": getattr(self, "html"),
+            "protocol_id": getattr(self, "protocol_id"),
+            "protocol": protocol,
+            "buttons": buttons,
+            "created_at": getattr(self, "created_at"),
+            "updated_at": getattr(self, "updated_at"),
+        }

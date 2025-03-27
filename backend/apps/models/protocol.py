@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel
 
 
 class GetProtocol(BaseModel):
@@ -13,6 +13,15 @@ class GetProtocol(BaseModel):
 
     created_at: datetime
     updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class PostProtocol(BaseModel):
+    name: str
+    description: str
+    type: str
 
     class Config:
         orm_mode = True

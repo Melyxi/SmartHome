@@ -3,8 +3,8 @@ from core.models.meta_button import MetaButton
 from core.services.base.service import BaseService
 from jinja2 import Template
 
-class ButtonService(BaseService):
 
+class ButtonService(BaseService):
     @classmethod
     async def build_html(cls, _model: Button, context=None):
         """
@@ -20,7 +20,6 @@ class ButtonService(BaseService):
 
 
 class MetaButtonService(BaseService):
-
     @classmethod
     async def build_html(cls, _model: MetaButton, context=None):
         """

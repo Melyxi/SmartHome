@@ -23,7 +23,6 @@ async def handle_echo(reader, writer):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(18, GPIO.OUT)
     while True:
-        st = time.monotonic()
         await asyncio.sleep(0.001)
         data = await reader.read(10000)
 

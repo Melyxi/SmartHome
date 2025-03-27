@@ -20,3 +20,14 @@ class Protocol(db.Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
 
     devices = relationship("Device", back_populates="protocol")
+
+    async def to_json(self):
+        return {
+            "id": getattr(self, "id"),
+            "uuid": getattr(self, "uuid"),
+            "name": getattr(self, "name"),
+            "description": getattr(self, "description"),
+            "type": getattr(self, "type"),
+            "created_at": getattr(self, "created_at"),
+            "updated_at": getattr(self, "updated_at"),
+        }

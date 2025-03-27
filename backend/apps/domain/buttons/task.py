@@ -21,7 +21,6 @@ buttons = [
         "uuid": "d008cd32-48af-4382-8c48-ac4f57e1d155",
         "name": "Включить реле",
         "description": "",
-
     }
 ]
 

@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel
 
 
 class GetState(BaseModel):
@@ -12,6 +12,7 @@ class GetState(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class WebsocketData(BaseModel):
     id: int

@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel
 
 from apps.models.state import GetState
 
@@ -17,6 +17,7 @@ class GetMetaButton(BaseModel):
     class Config:
         orm_mode = True
 
+
 class GetButton(BaseModel):
     id: int
     uuid: uuid.UUID
@@ -26,5 +27,13 @@ class GetButton(BaseModel):
     states: list[GetState]
     created_at: datetime
     updated_at: datetime
+
     class Config:
         orm_mode = True
+
+
+class PostButton(BaseModel):
+    name: str
+    description: str
+    meta_button_id: int
+    states: list[GetState]

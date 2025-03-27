@@ -3,6 +3,7 @@ from logging.config import fileConfig
 import os
 import sys
 import sys
+
 print(sys.path)
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, project_root)
@@ -46,7 +47,7 @@ targets_metadata = [
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-DATABASE_URL="postgresql+asyncpg://report_me_user_1:qqqwww12!@127.0.0.1:5432/new_project"
+DATABASE_URL = "postgresql+asyncpg://report_me_user_1:qqqwww12!@127.0.0.1:5432/new_project"
 
 
 def run_migrations_offline() -> None:
