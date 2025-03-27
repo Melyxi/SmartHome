@@ -16,3 +16,12 @@ class State(db.Base):
     data = Column(LargeBinary, default=b"", nullable=False)
     time = Column(Float, default=0.0)
     buttons = relationship("Button", secondary=button_state_association, back_populates="states")
+
+    async def to_json(self):
+        return {
+            "id": getattr(self, "id"),
+            "uuid": getattr(self, "uuid"),
+            "name": getattr(self, "name"),
+            "data": getattr(self, "data"),
+            "time": getattr(self, "time"),
+        }

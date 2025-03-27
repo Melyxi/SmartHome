@@ -10,47 +10,47 @@ from core.models.protocol import Protocol
 from core.models.state import State
 
 protocol = {
-        "uuid": "d85b7f3a-f66b-42aa-964a-f368f62ba5df",
-        "name": "Radio wave 433MHz",
-        "description": "Radio wave 433MHz",
-        "type": ProtocolType.RADIO_433MHz.value,
-    }
+    "uuid": "d85b7f3a-f66b-42aa-964a-f368f62ba5df",
+    "name": "Radio wave 433MHz",
+    "description": "Radio wave 433MHz",
+    "type": ProtocolType.RADIO_433MHz.value,
+}
 
 meta_button = {
-        "uuid": "6767f186-d729-4bfa-8e03-eaa76ef9a418",
-        "name": "Кнопка А",
-        "css": "",
-        "type": ButtonType.BUTTON.value,
-    }
+    "uuid": "6767f186-d729-4bfa-8e03-eaa76ef9a418",
+    "name": "Кнопка А",
+    "css": "",
+    "type": ButtonType.BUTTON.value,
+}
 
 button = {
-        "uuid": "d008cd32-48af-4382-8c48-ac4f57e1d155",
-        "name": "Включить реле",
-        "description": "",
-    }
+    "uuid": "d008cd32-48af-4382-8c48-ac4f57e1d155",
+    "name": "Включить реле",
+    "description": "",
+}
 
 state = {
     "uuid": "942d9d7c-7ec1-421b-b347-e620b02fc72e",
     "name": "Передача данных",
     "data": b"00000111011100100010000"
-            b"1110100001110111011110111"
-            b"011110111011110111010000"
-            b"111010000111011110100010"
-            b"0001000100001110100000000"
-            b"00000000000000000000000000"
-            b"011110111010000100011110100"
-            b"011110111011110111011110111"
-            b"01111011101000011101000011"
-            b"10111001000100001000100001"
-            b"11010000000000",
-    "time": 0.08
-    }
+    b"1110100001110111011110111"
+    b"011110111011110111010000"
+    b"111010000111011110100010"
+    b"0001000100001110100000000"
+    b"00000000000000000000000000"
+    b"011110111010000100011110100"
+    b"011110111011110111011110111"
+    b"01111011101000011101000011"
+    b"10111001000100001000100001"
+    b"11010000000000",
+    "time": 0.08,
+}
 
 device = {
     "uuid": "62dd9af2-ae3a-4c37-9106-3cb262ef9956",
     "name": "Управление реле",
     "description": "Управление реле",
-    "css": ""
+    "css": "",
 }
 
 
@@ -86,4 +86,3 @@ def sync_create_devices(*args):
 
     except IntegrityError:
         session.rollback()
-

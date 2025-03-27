@@ -11,6 +11,10 @@ class AsyncSqlAlchemyRepository(SqlRepositoryAbstract[T]):
         result = await self.session.execute(select(self.model_cls).filter_by(id=_id))
         return result.scalars().first()
 
+    async def get_by_ids(self, _ids: list[int]) -> list[T]:
+        result = await self.session.execute(select(self.model_cls).filter(self.model_cls.id.in_(_ids)))
+        return result.scalars().all()
+
     async def get_all(self):
         result = await self.session.execute(select(self.model_cls))
         return result.scalars().all()

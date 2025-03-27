@@ -188,4 +188,3 @@ def loads(
         allow_nan=allow_nan,
         object_hook=object_hook,
     )
-

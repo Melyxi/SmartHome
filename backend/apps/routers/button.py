@@ -18,9 +18,13 @@ state_router = APIRouter()
 active_connections = []
 states_connection: dict = {}
 
+
 @state_router.websocket("/button")
-async def websocket_endpoint(websocket: WebSocket, session: AsyncSession = Depends(get_session),
-                             transmitter: ClientInterface = Depends(get_transmitter)):
+async def websocket_endpoint(
+    websocket: WebSocket,
+    session: AsyncSession = Depends(get_session),
+    transmitter: ClientInterface = Depends(get_transmitter),
+):
     await websocket.accept()
 
     active_connections.append(websocket)
@@ -39,17 +43,17 @@ async def websocket_endpoint(websocket: WebSocket, session: AsyncSession = Depen
             else:
                 state = states_connection[websocket_data.id]
 
-            print(f'\n########{websocket_data.protocol=}########')
-            print(f'\n########{state.id=}########')
-            print(f'\n########{state.time=}########')
-            print(f'\n########{state.data=}########')
+            print(f"\n########{websocket_data.protocol=}########")
+            print(f"\n########{state.id=}########")
+            print(f"\n########{state.time=}########")
+            print(f"\n########{state.data=}########")
             protocol = ProtocolFactory(websocket_data.protocol, state.data, state.time)
             data_bytes = await protocol.build()
 
             await transmitter.send(data_bytes)
 
-            print(f'\n########{data_bytes=}########')
-            print(f'\n########{time.monotonic() - st=}########')
+            print(f"\n########{data_bytes=}########")
+            print(f"\n########{time.monotonic() - st=}########")
             for connection in active_connections:
                 await connection.send_text(f"Сервер получил: 111")
 

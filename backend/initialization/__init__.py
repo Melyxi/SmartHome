@@ -1,4 +1,3 @@
-
 from configs.config import settings
 from core.configurate_logging import get_logger
 from core.logging.loguru_configurate_logging import DefaultLoggingConfigurator

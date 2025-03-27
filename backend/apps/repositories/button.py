@@ -6,5 +6,6 @@ from core.models.meta_button import MetaButton
 class ButtonSqlAlchemyRepository(AsyncSqlAlchemyRepository[Button]):
     pass
 
+
 class MetaButtonSqlAlchemyRepository(AsyncSqlAlchemyRepository[MetaButton]):
     pass

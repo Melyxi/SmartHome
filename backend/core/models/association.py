@@ -8,5 +8,5 @@ device_button_association = Table(
     db.Base.metadata,
     Column("device_id", Integer, ForeignKey("devices.id"), primary_key=True),
     Column("button_id", Integer, ForeignKey("buttons.id"), primary_key=True),
-    extend_existing=True
+    extend_existing=True,
 )
