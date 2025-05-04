@@ -10,10 +10,11 @@ class AppInitializer:
         self.app = app
 
     def init_routers(self) -> None:
-        from apps.routers.device import devices_router
         from apps.routers.button import state_router
+        from apps.routers.device import devices_router
+        from apps.routers.mqtt import mqtt_router
 
-        routers = [devices_router, state_router]
+        routers = [devices_router, state_router, mqtt_router]
 
         for router in routers:
             self.app.include_router(router)

@@ -1,13 +1,13 @@
 import asyncio
 from contextlib import asynccontextmanager
 
+from apps.domain.devices.task import sync_create_devices
+from apps.domain.mqtt.task import shutdown_mqtt
+from core.adapter.tasks import shutdown_event, startup_event
 from fastapi import FastAPI
 
-from apps.domain.devices.task import sync_create_devices
-from core.adapter.tasks import startup_event, shutdown_event
-
 startup_tasks = [sync_create_devices, startup_event]
-shutdown_tasks = [shutdown_event]
+shutdown_tasks = [shutdown_event, shutdown_mqtt]
 
 
 def initialization_tasks(kwargs):

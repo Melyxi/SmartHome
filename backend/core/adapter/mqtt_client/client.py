@@ -1,10 +1,10 @@
 import paho.mqtt.client as mqtt
 from core.configurate_logging import get_logger
 
-
 server_logger = get_logger("server")
 
 class ClientZigbeeMQTT:
+    messages = []
 
     def __init__(self, host, port):
         self.host = host
@@ -12,12 +12,15 @@ class ClientZigbeeMQTT:
         self.mqtt_client = self.connect()
 
     def on_connect(self, client, userdata, flags, reason_code, properties):
-        print(f"Connected with result code {reason_code}")
-        server_logger(f"Connected with result code %s", reason_code)
+        print(f"MQTT Client connected with result code {reason_code}")
+        client.subscribe("zigbee2mqtt/bridge/response/permit_join")
+        server_logger.info("Connected with result code %s", reason_code)
 
     def on_message(self, client, userdata, msg):
-        print(f"Received message: {msg.topic} {str(msg.payload)}")
+        message = f"Received message: {msg.topic} {str(msg.payload)}"
+        print(message)
         server_logger.info(f"Received message: %s %s", msg.topic, str(msg.payload))
+        self.messages.append(message)
 
 
     def connect(self):
@@ -25,15 +28,19 @@ class ClientZigbeeMQTT:
         mqttc.on_connect = self.on_connect
         mqttc.on_message = self.on_message
         mqttc.on_publish = self.on_publish
-
-        mqttc.connect(self.host, self.port, 60)
+        print(f'\n########{self.host=}########')
+        print(f'\n########{self.port=}########')
+        mqttc.cmasteronnect(self.host, self.port, 60)
+        mqttc.loop_start()
         return mqttc
 
     def disconnect(self):
-        print(f"Client is disconnected")
-        server_logger.info(f"Client is disconnected")
+        print(f"MQTT Client is disconnected")
+        server_logger.info(f"MQTT Client is disconnected")
+        self.mqtt_client.loop_stop()
+        self.mqtt_client.disconnect()
 
-    def on_publish(client, userdata, mid, reason_code, properties):
+    def on_publish(self, client, userdata, mid, reason_code, properties):
         # reason_code and properties will only be present in MQTTv5. It's always unset in MQTTv3
         try:
             print(f"Publish message: {userdata}")

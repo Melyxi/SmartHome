@@ -1,5 +1,5 @@
 from core.adapter.transmitter_interface import ClientInterface
-from fastapi import Request, WebSocket
+from fastapi import WebSocket
 
 
 async def get_transmitter(websocket: WebSocket) -> ClientInterface:
