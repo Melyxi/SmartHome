@@ -1,13 +1,10 @@
-from sqlalchemy.orm import relationship
-
-from core.extensions import db
-from sqlalchemy import Column, UUID, DateTime, func, ForeignKey, Table
-from sqlalchemy import String
-from sqlalchemy import Integer
 import uuid
 
+from core.extensions import db
 from core.models.association import device_button_association
 from core.templates import device_html
+from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, func
+from sqlalchemy.orm import relationship
 
 
 class Device(db.Base):
@@ -15,6 +12,8 @@ class Device(db.Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
     uuid = Column(UUID, default=uuid.uuid4, unique=True, index=True)
+    unique_name = Column(String(100), unique=True, nullable=False)
+
     name = Column(String(50), nullable=False)
     description = Column(String(300), nullable=False)
     css = Column(String(2000), default="", nullable=False)
@@ -25,23 +24,25 @@ class Device(db.Base):
 
     buttons = relationship("core.models.button.Button", secondary=device_button_association, back_populates="devices")
 
+    exposes = Column(String(10000), default="", nullable=False)
+
     created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
 
     async def to_json(self):
-        protocol = await getattr(self, "protocol").to_json() if getattr(self, "protocol") else None
+        protocol = await self.protocol.to_json() if self.protocol else None
         buttons = [await button.to_json() for button in getattr(self, "buttons", [])]
 
         return {
-            "id": getattr(self, "id"),
-            "uuid": getattr(self, "uuid"),
-            "name": getattr(self, "name"),
-            "description": getattr(self, "description"),
-            "css": getattr(self, "css"),
-            "html": getattr(self, "html"),
-            "protocol_id": getattr(self, "protocol_id"),
+            "id": self.id,
+            "uuid": self.uuid,
+            "name": self.name,
+            "description": self.description,
+            "css": self.css,
+            "html": self.html,
+            "protocol_id": self.protocol_id,
             "protocol": protocol,
             "buttons": buttons,
-            "created_at": getattr(self, "created_at"),
-            "updated_at": getattr(self, "updated_at"),
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }

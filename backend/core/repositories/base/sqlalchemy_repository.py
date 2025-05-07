@@ -15,11 +15,11 @@ class AsyncSqlAlchemyRepository(SqlRepositoryAbstract[T]):
         result = await self.session.execute(select(self.model_cls).filter(self.model_cls.id.in_(_ids)))
         return result.scalars().all()
 
-    async def get_all(self):
+    async def get_all(self) -> list[T]:
         result = await self.session.execute(select(self.model_cls))
         return result.scalars().all()
 
-    async def get_by_filter(self, **kwargs):
+    async def get_by_filter(self, **kwargs) -> list[T]:
         result = await self.session.execute(select(self.model_cls).filter_by(**kwargs))
         return result.scalars().all()
 

@@ -1,10 +1,8 @@
-from sqlalchemy.orm import relationship
+import uuid
 
 from core.extensions import db
-from sqlalchemy import Column, UUID, DateTime, func
-from sqlalchemy import String
-from sqlalchemy import Integer
-import uuid
+from sqlalchemy import UUID, Column, DateTime, Integer, String, func
+from sqlalchemy.orm import relationship
 
 
 class Protocol(db.Base):
@@ -23,11 +21,11 @@ class Protocol(db.Base):
 
     async def to_json(self):
         return {
-            "id": getattr(self, "id"),
-            "uuid": getattr(self, "uuid"),
-            "name": getattr(self, "name"),
-            "description": getattr(self, "description"),
-            "type": getattr(self, "type"),
-            "created_at": getattr(self, "created_at"),
-            "updated_at": getattr(self, "updated_at"),
+            "id": self.id,
+            "uuid": self.uuid,
+            "name": self.name,
+            "description": self.description,
+            "type": self.type,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }

@@ -1,11 +1,12 @@
-from jinja2 import Template
-
 from apps.domain.buttons.button import ButtonService
 from apps.domain.utils import populate_buttons
 from apps.models.device import GetDevice, PostDevice
 from core.models.device import Device
 from core.services.base.service import BaseService
 from core.templates import device_html
+from jinja2 import Template
+from simplejson import JSONDecodeError
+from utils import json
 
 
 class DeviceService(BaseService):
@@ -16,7 +17,7 @@ class DeviceService(BaseService):
         response = []
         for device in devices:
             await self.build_html(device)
-            response.append(self.get_model.model_validate(await device.to_json()))
+            response.append(self.get_model.model_validate(device, from_attributes=True))
         return response, 200
 
     async def post(self, device: PostDevice):
@@ -31,12 +32,28 @@ class DeviceService(BaseService):
             device["html"] = device_html
         device["buttons"] = await populate_buttons(device["buttons"])
 
+        if not device["unique_name"]:
+            device["unique_name"] = str(device["uuid"])
+
+    @staticmethod
+    def get_exposes(model):
+        try:
+            exposes =  json.loads(model.exposes)
+        except JSONDecodeError:
+            exposes = []
+
+        return exposes
+
     @classmethod
     async def build_html(cls, _model: Device, context=None):
         if context is None:
             context = {}
 
         context["device"] = _model
+
+        exposes = cls.get_exposes(_model)
+        context["exposes"] = exposes
+        _model.exposes = exposes
 
         for button in _model.buttons:
             await ButtonService.build_html(_model=button, context=context)

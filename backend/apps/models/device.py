@@ -1,16 +1,23 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, Field
-
 from apps.models.button import GetButton
 from apps.models.protocol import GetProtocol
+from pydantic import BaseModel
 
+
+class GetShortDevice(BaseModel):
+    id: int
+    uuid: uuid.UUID
+    name: str
+    unique_name: str
+    description: str
 
 class GetDevice(BaseModel):
     id: int
     uuid: uuid.UUID
     name: str
+    unique_name: str
     description: str
     css: str
     html: str
@@ -29,6 +36,7 @@ class GetDevice(BaseModel):
 
 class PostDevice(BaseModel):
     name: str
+    unique_name: str
     description: str | None = ""
     css: str | None = ""
     html: str | None = ""

@@ -52,6 +52,7 @@ export default {
 created() {
   // Установка соединения с вебсокетом при создании компонента
   this.connectWebSocket();
+  this.connectZigbeeSocket();
 },
 beforeUnmount() {
   // Закрытие соединения при уничтожении компонента
@@ -111,6 +112,36 @@ methods: {
       });
     });
   },
+
+  connectZigbeeSocket() {
+    this.socket = new WebSocket('ws://0.0.0.0:8000/mqtt')
+    this.socket.onopen = () => {
+      console.log('Соединение с вебсокетом mqtt установлено');
+    };
+      this.socket.onmessage = (event) => {
+      const data = event.data;
+      console.log('Получено сообщение от mqtt:', data);
+
+      // Обновление состояния устройства при получении данных
+      if (data.deviceId === this.device.id) {
+        this.$emit('update:status', data.status); // Обновляем статус через родителя
+      }
+    };
+     // Обработчик ошибок
+    this.socket.onerror = (error) => {
+      console.error('Ошибка вебсокета:', error);
+    };
+
+    // Обработчик закрытия соединения
+    this.socket.onclose = () => {
+      console.log('Соединение с вебсокетом закрыто');
+    };
+  },
+
+
+
+
+
   connectWebSocket() {
     // Замените URL на ваш WebSocket-сервер
     this.socket = new WebSocket('ws://0.0.0.0:8000/button');
@@ -149,23 +180,28 @@ methods: {
 
     // Очищаем предыдущий интервал, если он существует
     this.stopSendingMessages();
-    const state = button.states[0]
+    const state = button?.states?.[0] ?? null;
     // Начинаем отправку сообщений каждые 500 мс
-    this.sendInterval = setInterval(() => {
 
-      const message = {
-        id: state.id,
-        protocol: this.device.protocolType
-      };
+    if (state != null) {
+        this.sendInterval = setInterval(() => {
 
-      console.log(this.device.buttons)
-      console.log(this.device)
-      console.log(button.id)
+          const message = {
+            id: state.id,
+            protocol: this.device.protocolType
+          };
+
+          console.log(this.device.buttons)
+          console.log(this.device)
+          console.log(button.id)
 
 
-      this.socket.send(JSON.stringify(message));
-      console.log('Отправлено сообщение:', message);
-    }, state.time * 1000); // Интервал отправки (500 мс)
+          this.socket.send(JSON.stringify(message));
+          console.log('Отправлено сообщение:', message);
+        }, state.time * 1000); // Интервал отправки (500 мс)
+
+    }
+
   },
   stopSendingMessages() {
     if (this.sendInterval) {

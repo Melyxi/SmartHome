@@ -1,10 +1,14 @@
+import json
+from collections import deque
+
 import paho.mqtt.client as mqtt
 from core.configurate_logging import get_logger
 
 server_logger = get_logger("server")
 
+
 class ClientZigbeeMQTT:
-    messages = []
+    messages =  deque(maxlen=100)
 
     def __init__(self, host, port):
         self.host = host
@@ -14,23 +18,29 @@ class ClientZigbeeMQTT:
     def on_connect(self, client, userdata, flags, reason_code, properties):
         print(f"MQTT Client connected with result code {reason_code}")
         client.subscribe("zigbee2mqtt/bridge/response/permit_join")
+        client.subscribe("zigbee2mqtt/bridge/request/+")
+        client.subscribe("zigbee2mqtt/bridge/event")
         server_logger.info("Connected with result code %s", reason_code)
 
     def on_message(self, client, userdata, msg):
-        message = f"Received message: {msg.topic} {str(msg.payload)}"
+        message = f"Received message: {msg.topic}"
         print(message)
-        server_logger.info(f"Received message: %s %s", msg.topic, str(msg.payload))
+
+        msg_json = json.loads(msg.payload)
+        print(f'\n########{msg_json=}########')
+        server_logger.info(f"Received message: %s %s", msg.topic, "")
         self.messages.append(message)
 
 
     def connect(self):
         mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         mqttc.on_connect = self.on_connect
-        mqttc.on_message = self.on_message
+        # mqttc.on_message = self.on_message
         mqttc.on_publish = self.on_publish
         print(f'\n########{self.host=}########')
         print(f'\n########{self.port=}########')
-        mqttc.cmasteronnect(self.host, self.port, 60)
+        mqttc.connect(self.host, self.port, 60)
+
         mqttc.loop_start()
         return mqttc
 
