@@ -120,6 +120,42 @@ methods: {
     };
       this.socket.onmessage = (event) => {
       const data = event.data;
+
+      if (data) {
+        const jsonObject = JSON.parse(data);
+        const deviceId = Object.keys(jsonObject)[0];
+
+
+        const dataDevice = jsonObject[deviceId]
+        console.log(dataDevice)
+        console.log(typeof(dataDevice))
+
+        for (const key in dataDevice) {
+                console.log(key)
+              if (Object.hasOwn(dataDevice, key)) {
+                // Формируем ID элемента (например, "0xa4c13887aeae979f_battery")
+                const elementId = `${deviceId}_${key}`;
+                 console.log(elementId)
+                // Находим элемент по этому ID
+                const element = document.getElementById(elementId);
+
+                // Если элемент найден, устанавливаем его текст
+                if (element) {
+                   console.log(element)
+                   console.log(dataDevice[key].toString())
+                  element.textContent = dataDevice[key].toString(); // Преобразуем значение в строку
+                } else {
+                  console.warn(`Элемент с ID ${elementId} не найден`);
+                }
+              }
+            }
+
+
+
+      }
+
+
+
       console.log('Получено сообщение от mqtt:', data);
 
       // Обновление состояния устройства при получении данных
