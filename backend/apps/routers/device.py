@@ -1,12 +1,11 @@
+from apps.domain.devices.device import DeviceService
+from apps.domain.exceptions import ButtonsNotFoundValidationError
+from apps.models.device import GetDevice, PostDevice
+from apps.repositories.device import DeviceSqlAlchemyRepository
+from core.dependencies.db import get_session
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from apps.domain.devices.device import DeviceService
-from apps.domain.exceptions import ButtonsNotFoundValidationError
-from apps.models.device import PostDevice, GetDevice
-from apps.repositories.device import DeviceSqlAlchemyRepository
-from core.dependencies.db import get_session
 
 devices_router = APIRouter()
 

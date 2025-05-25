@@ -2,7 +2,7 @@ import decimal
 import logging
 import uuid
 from datetime import date, datetime, time, timedelta
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional, Union, IO
 
 import numpy as np
 import pandas as pd
@@ -165,6 +165,30 @@ def dumps(  # pylint: disable=too-many-arguments
             encoding=None,
         )
     return results_string
+
+def dump(  # pylint: disable=too-many-arguments
+    obj: Any,
+    fp: IO[str],
+    default: Optional[Callable[[Any], Any]] = None,
+    allow_nan: bool = False,
+    ignore_nan: bool = True,
+    sort_keys: bool = False,
+    indent: Union[str, int, None] = None,
+    separators: Union[tuple[str, str], None] = None,
+    cls: Union[type[simplejson.JSONEncoder], None] = None,
+) -> None:
+    return simplejson.dump(
+            obj,
+            fp,
+            default=default,
+            allow_nan=allow_nan,
+            ignore_nan=ignore_nan,
+            sort_keys=sort_keys,
+            indent=indent,
+            separators=separators,
+            cls=cls,
+            encoding=None,
+        )
 
 
 def loads(

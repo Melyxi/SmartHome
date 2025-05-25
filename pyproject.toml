@@ -13,6 +13,7 @@ dependencies = [
     "jsonpath-ng>=1.7.0",
     "loguru>=0.7.3",
     "numpy>=2.2.3",
+    "paho-mqtt>=2.1.0",
     "pandas>=2.2.3",
     "psycopg2>=2.9.10",
     "pydantic>=2.10.6",

@@ -1,16 +1,14 @@
-import asyncio
 import time
-
-from fastapi import APIRouter, Depends, WebSocket
 
 from apps.domain.protocols.protocol import ProtocolFactory
 from apps.models.state import WebsocketData
 from apps.repositories.state import StateSqlAlchemyRepository
 from core.adapter.transmitter_interface import ClientInterface
-from core.dependencies.transmitter import get_transmitter
-from utils import json
-from sqlalchemy.ext.asyncio import AsyncSession
 from core.dependencies.db import get_session
+from core.dependencies.transmitter import get_transmitter
+from fastapi import APIRouter, Depends, WebSocket
+from sqlalchemy.ext.asyncio import AsyncSession
+from utils import json
 
 state_router = APIRouter()
 
