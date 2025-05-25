@@ -7,6 +7,7 @@ from core.enums import ProtocolType
 from core.extensions import client_mqtt, db
 from core.models.device import Device
 from core.models.protocol import Protocol
+from core.templates import mqtt_device_html
 from utils import json
 
 
@@ -76,7 +77,7 @@ def devices(client, userdata, message):
             new_device["description"] = zigbee_device["definition"]["description"]
             new_device["exposes"] = json.dumps(zigbee_device["definition"]["exposes"])
             new_device["protocol_id"] = protocol.id
-
+            new_device["html"] = mqtt_device_html
             new_devices.append(new_device)
 
     with db.sync_session() as session:
