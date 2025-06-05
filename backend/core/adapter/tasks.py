@@ -1,5 +1,5 @@
-from core.adapter.transmitter import ClientTransmitter
 from configs.config import settings
+from core.adapter.transmitter import ClientTransmitter
 
 
 async def startup_event(app):

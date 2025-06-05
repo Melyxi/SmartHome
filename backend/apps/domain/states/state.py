@@ -7,5 +7,5 @@ class StateService(BaseService):
 
     async def get(self, _id: int):
         state = await self.repository.get_by_id(_id)
-        response = self.get_model.from_orm(state)
+        response = self.get_model.model_validate(state)
         return response, 200

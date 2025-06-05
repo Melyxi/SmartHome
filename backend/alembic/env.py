@@ -1,21 +1,19 @@
-from logging.config import fileConfig
-
 import os
 import sys
-import sys
+from logging.config import fileConfig
 
-print(sys.path)
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, project_root)
 
-from sqlalchemy.ext.asyncio import create_async_engine
 
-# from backend.configs.config import settings
-from sqlalchemy import create_engine
-from sqlalchemy import pool
 
 from alembic import context
 
+# from backend.configs.config import settings
+from sqlalchemy import create_engine, pool
+from sqlalchemy.ext.asyncio import create_async_engine
+
+sys.path.insert(0, project_root)
+sys.path.insert(0, f"{project_root}/backend")
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -27,8 +25,8 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from core.models import state
-from core.models import button, device, account, protocol, meta_button, association
+from configs.config import settings
+from core.models import account, association, button, device, meta_button, protocol, state, scene
 
 targets_metadata = [
     account.User.metadata,
@@ -39,6 +37,7 @@ targets_metadata = [
     button.button_state_association.metadata,
     association.device_button_association.metadata,
     device.Device.metadata,
+    scene.Scene.metadata
 ]
 
 # target_metadata = None
@@ -47,7 +46,8 @@ targets_metadata = [
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-
+# DATABASE_URL = config.get_main_option("DATABASE_URL")
+DATABASE_URL = settings.get("DATABASE_URL")
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.

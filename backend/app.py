@@ -1,9 +1,7 @@
-from fastapi import FastAPI
-
-
-from initialization.middleware import initialization_middleware
 from core.configurate_logging import get_logger
+from fastapi import FastAPI
 from initialization import AppInitializer
+from initialization.middleware import initialization_middleware
 from initialization.tasks import initialization_tasks
 
 logger = get_logger("server")

@@ -19,9 +19,9 @@ class State(db.Base):
 
     async def to_json(self):
         return {
-            "id": getattr(self, "id"),
-            "uuid": getattr(self, "uuid"),
-            "name": getattr(self, "name"),
-            "data": getattr(self, "data"),
-            "time": getattr(self, "time"),
+            "id": self.id,
+            "uuid": self.uuid,
+            "name": self.name,
+            "data": self.data,
+            "time": self.time,
         }

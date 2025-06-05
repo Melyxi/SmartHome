@@ -1,9 +1,6 @@
-from configs.config import settings
-from core.adapter.mqtt_client.client import ClientZigbeeMQTT
+from core.cache.mongodb.backend import MongoDBSCache
 from core.db.fastapi_asyncalchemy.base import SQLA
 
 db = SQLA()
 
-client_mqtt = ClientZigbeeMQTT(settings.get("MQTT_HOST"), settings.get("MQTT_PORT"))
-
-
+cache = MongoDBSCache("mongodb://localhost:27017", "test_db")

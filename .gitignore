@@ -1,4 +1,5 @@
 backend/.env/
+backend/media
 env/
 .idea/
 server.log

@@ -32,7 +32,7 @@ class DeviceService(BaseService):
     async def validate_post(self, device: dict):
         if not device["html"]:
             protocol = await ProtocolSqlAlchemyRepository(self.repository.session).get_by_id(device["protocol_id"])
-            if protocol.type == ProtocolType.ZIGBEE.value:
+            if protocol.type is ProtocolType.ZIGBEE:
                 device["html"] = mqtt_device_html
             else:
                 device["html"] = device_html

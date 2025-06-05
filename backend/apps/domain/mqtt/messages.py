@@ -1,10 +1,13 @@
+from datetime import datetime, timezone
 from pathlib import Path
 
 from apps.models.device import GetShortDevice
 from apps.repositories.device import DeviceSqlAlchemyRepository
 from configs.config import settings
+from core.adapter.mqtt_client.client import AsyncClientZigbeeMQTT
+from core.dependencies.mqtt import get_mqtt_client
 from core.enums import ProtocolType
-from core.extensions import client_mqtt, db
+from core.extensions import cache, db
 from core.models.device import Device
 from core.models.protocol import Protocol
 from core.templates import mqtt_device_html
@@ -14,13 +17,12 @@ from utils import json
 def handle_mytopic(client, userdata, message):
     # client.subscribe("zigbee2mqtt/bridge/devices")
     client.subscribe("zigbee2mqtt/bridge/event")
-    print(f'\n########{"decowwwwrator"=}########')
     client.subscribe("zigbee2mqtt/bridge/devices")
     print(f'\n########{client=}########')
     print(f'\n########{userdata=}########')
     print(f'\n########{message=}########')
 
-client_mqtt.mqtt_client.message_callback_add("zigbee2mqtt/bridge/response/permit_join", handle_mytopic)
+# client_mqtt.mqtt_client.message_callback_add("zigbee2mqtt/bridge/response/permit_join", handle_mytopic)
 
 
 def bridge_event(client, userdata, message):
@@ -30,16 +32,34 @@ def bridge_event(client, userdata, message):
     print(f'\n########{message=}########')
 
 
-client_mqtt.mqtt_client.message_callback_add("zigbee2mqtt/bridge/response/event", bridge_event)
+# client_mqtt.mqtt_client.message_callback_add("zigbee2mqtt/bridge/response/event", bridge_event)
+async def message_from_device(message):
+    json_message = json.loads(message.payload)
+
+    topic = message.topic.value.split('/')[-1]
+    result_msg = {topic: json_message}
+
+    # client_mqtt.messages.append(result_msg)
+
+    utc_now = datetime.now(timezone.utc)
+    timestamp = utc_now.timestamp()
+
+    cache_key = f"device_{topic}"
+    cache_data = await cache.get(cache_key)
+    print(f'\n########{cache_data=}########')
+    await cache.set(f"device_{topic}", {"time": timestamp, "data": json_message})
 
 
-def devices(client, userdata, message):
-    print("devices")
-    print(f'\n########{client=}########')
-    print(f'\n########{userdata=}########')
-    print(f'\n########{message=}########')
+
+
+    # Добавить в кэш для истории
+    print(f'\n########{message.payload=}########')
+    print(f'\n########{message.topic=}########')
+    print(f'\n########MESSAGE FROM DEVICES########')
+
+
+async def devices(message):
     msg_json = json.loads(message.payload)
-
     with open(Path(settings.BASE_DIR, "zigbee-devices.json"), "w+", encoding="utf-8") as f:
         json.dump(msg_json, f)
 
@@ -52,14 +72,9 @@ def devices(client, userdata, message):
     existed_devices = [GetShortDevice.model_validate(device, from_attributes=True) for device in existed_devices]
     existed_devices_names = [device.unique_name for device in existed_devices]
 
-    #
-    # print(f'\n########{zigbee_devices=}########')
-
     zigbee_devices_dict = {device["ieee_address"]: device for device in zigbee_devices}
 
     different_devices = set(zigbee_devices_dict.keys())  - set(existed_devices_names)
-
-    print(f'\n########{different_devices=}########')
 
     new_devices = []
     protocol = None
@@ -89,33 +104,8 @@ def devices(client, userdata, message):
         session.commit()
 
     for ieee_address in zigbee_devices_dict:
-        print(f'\n########{ieee_address=}########')
-        client_mqtt.mqtt_client.subscribe(f"zigbee2mqtt/{ieee_address}")
-        client_mqtt.mqtt_client.message_callback_add(f"zigbee2mqtt/{ieee_address}", message_from_device)
-
-    # print(f'\n########{zigbee_devices_dict.keys()=}########')
-    # print(f'\n########{existed_devices_names=}########')
-    # print(f'\n########{existed_devices=}########')
+        await AsyncClientZigbeeMQTT.message_callback_add(f"zigbee2mqtt/{ieee_address}", message_from_device)
 
 
-    # print(f'\n########{msg_json=}########')
-
-
-client_mqtt.mqtt_client.message_callback_add("zigbee2mqtt/bridge/devices", devices)
-
-
-def message_from_device(client, userdata, message):
-    json_message = json.loads(message.payload)
-
-    topic = message.topic.split('/')[-1]
-    result_msg = {topic: json_message}
-
-    client_mqtt.messages.append(result_msg)
-
-    # Добавить в кэш для истории
-
-    print(f'\n########{message.payload=}########')
-    print(f'\n########{message.topic=}########')
-    print(f'\n########MESSAGE FROM DEVICES########')
-
+router_message = {"zigbee2mqtt/bridge/devices": devices}
 

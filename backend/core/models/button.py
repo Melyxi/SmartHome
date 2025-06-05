@@ -1,10 +1,9 @@
-from sqlalchemy.orm import relationship
-from core.extensions import db
-from sqlalchemy import Column, UUID, DateTime, func, ForeignKey, Table
-from sqlalchemy import String, Integer
 import uuid
 
+from core.extensions import db
 from core.models.association import device_button_association
+from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, Table, func
+from sqlalchemy.orm import relationship
 
 button_state_association = Table(
     "button_states",
@@ -32,16 +31,16 @@ class Button(db.Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
 
     async def to_json(self):
-        meta_button = await getattr(self, "meta_button").to_json() if getattr(self, "meta_button") else None
+        meta_button = await self.meta_button.to_json() if self.meta_button else None
         states = [await state.to_json() for state in getattr(self, "states", [])]
         return {
-            "id": getattr(self, "id"),
-            "uuid": getattr(self, "uuid"),
-            "name": getattr(self, "name"),
-            "description": getattr(self, "description"),
-            "meta_button_id": getattr(self, "meta_button_id"),
+            "id": self.id,
+            "uuid": self.uuid,
+            "name": self.name,
+            "description": self.description,
+            "meta_button_id": self.meta_button_id,
             "meta_button": meta_button,
             "states": states,
-            "created_at": getattr(self, "created_at"),
-            "updated_at": getattr(self, "updated_at"),
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }

@@ -2,6 +2,7 @@ import uuid
 
 from core.extensions import db
 from core.models.association import device_button_association
+from core.models.scene import scene_device_association
 from core.templates import device_html
 from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import relationship
@@ -23,6 +24,7 @@ class Device(db.Base):
     protocol = relationship("Protocol", back_populates="devices")
 
     buttons = relationship("core.models.button.Button", secondary=device_button_association, back_populates="devices")
+    scenes = relationship("Scene", secondary=scene_device_association, back_populates="devices")
 
     exposes = Column(String(10000), default="", nullable=False)
 

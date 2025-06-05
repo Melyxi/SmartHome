@@ -5,9 +5,8 @@ Revises:
 Create Date: 2025-05-06 21:27:01.535187
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '5646ff0fb983'
@@ -22,8 +21,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('uuid', sa.UUID(), nullable=True),
     sa.Column('name', sa.String(length=50), nullable=False),
-    sa.Column('css', sa.String(length=2000), nullable=False),
-    sa.Column('html', sa.String(length=2000), nullable=False),
+    sa.Column('css', sa.String(length=20000), nullable=False),
+    sa.Column('html', sa.String(length=20000), nullable=False),
     sa.Column('type', sa.String(length=50), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -78,8 +77,8 @@ def upgrade():
     sa.Column('unique_name', sa.String(length=100), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
     sa.Column('description', sa.String(length=300), nullable=False),
-    sa.Column('css', sa.String(length=2000), nullable=False),
-    sa.Column('html', sa.String(length=2000), nullable=False),
+    sa.Column('css', sa.String(length=20000), nullable=False),
+    sa.Column('html', sa.String(length=20000), nullable=False),
     sa.Column('protocol_id', sa.Integer(), nullable=False),
     sa.Column('exposes', sa.String(length=10000), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),

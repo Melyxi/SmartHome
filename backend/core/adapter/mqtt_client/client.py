@@ -1,70 +1,64 @@
-import json
+import asyncio
 from collections import deque
 
-import paho.mqtt.client as mqtt
+from aiomqtt import Client
+
 from core.configurate_logging import get_logger
 
 server_logger = get_logger("server")
 
 
-class ClientZigbeeMQTT:
-    messages =  deque(maxlen=100)
+
+class AsyncClientZigbeeMQTT:
+
+    topic_functions = {}
 
     def __init__(self, host, port):
         self.host = host
         self.port = port
-        self.mqtt_client = self.connect()
+        self.client = None
+        self.messages = deque(maxlen=100)
+        self._task = None
 
-    def on_connect(self, client, userdata, flags, reason_code, properties):
-        print(f"MQTT Client connected with result code {reason_code}")
-        client.subscribe("zigbee2mqtt/bridge/response/permit_join")
-        client.subscribe("zigbee2mqtt/bridge/request/+")
-        client.subscribe("zigbee2mqtt/bridge/event")
-        server_logger.info("Connected with result code %s", reason_code)
+    @classmethod
+    async def message_callback_add(cls, topic: str, function):
+        cls.topic_functions.update({topic: function})
 
-    def on_message(self, client, userdata, msg):
-        message = f"Received message: {msg.topic}"
-        print(message)
+    @classmethod
+    async def message_callback_remove(cls, topic: str, function):
+        if topic in cls.topic_functions:
+            del cls.topic_functions[topic]
 
-        msg_json = json.loads(msg.payload)
-        print(f'\n########{msg_json=}########')
-        server_logger.info(f"Received message: %s %s", msg.topic, "")
-        self.messages.append(message)
+    async def on_message(self, message):
+        if message_function := self.topic_functions.get(message.topic.value):
+            await message_function(message)
+        self.messages.append(message.payload.decode())
 
+    async def listen_mqtt(self):
+        while True:  # Бесконечный цикл для переподключения
+            try:
+                async with Client(self.host, self.port) as client:
+                    print("MQTT is connected")
+                    server_logger.info("MQTT is connected")
 
-    def connect(self):
-        mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-        mqttc.on_connect = self.on_connect
-        # mqttc.on_message = self.on_message
-        mqttc.on_publish = self.on_publish
-        print(f'\n########{self.host=}########')
-        print(f'\n########{self.port=}########')
-        mqttc.connect(self.host, self.port, 60)
+                    self.client = client
+                    await client.subscribe("zigbee2mqtt/#")
+                    async for message in client.messages:
+                        await self.on_message(message)
 
-        mqttc.loop_start()
-        return mqttc
+            except Exception as e:
+                print(f"MQTT connection error: {e}. Reconnecting in 5 seconds...")
+                await asyncio.sleep(5)
 
-    def disconnect(self):
-        print(f"MQTT Client is disconnected")
-        server_logger.info(f"MQTT Client is disconnected")
-        self.mqtt_client.loop_stop()
-        self.mqtt_client.disconnect()
+    async def connect(self):
+        self._task = asyncio.create_task(self.listen_mqtt())
 
-    def on_publish(self, client, userdata, mid, reason_code, properties):
-        # reason_code and properties will only be present in MQTTv5. It's always unset in MQTTv3
-        try:
-            print(f"Publish message: {userdata}")
-            server_logger.info("Publish message")
-            userdata.remove(mid)
-        except KeyError:
-            print("on_publish() is called with a mid not present in unacked_publish")
-            print("This is due to an unavoidable race-condition:")
-            print("* publish() return the mid of the message sent.")
-            print("* mid from publish() is added to unacked_publish by the main thread")
-            print("* on_publish() is called by the loop_start thread")
-            print("While unlikely (because on_publish() will be called after a network round-trip),")
-            print(" this is a race-condition that COULD happen")
-            print("")
-            print("The best solution to avoid race-condition is using the msg_info from publish()")
-            print("We could also try using a list of acknowledged mid rather than removing from pending list,")
-            print("but remember that mid could be re-used !")
+    async def disconnect(self):
+        if self._task:
+            self._task.cancel()
+            try:
+                await self._task
+            except asyncio.CancelledError:
+                print("MQTT listener stopped")
+            except Exception as e:
+                print(f"Error while disconnecting: {e}")
