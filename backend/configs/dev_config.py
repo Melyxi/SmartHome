@@ -13,6 +13,9 @@ class DevSettings(Settings):
     MQTT_HOST: str = Field(..., env="MQTT_HOST")
     MQTT_PORT: int = Field(..., env="MQTT_PORT")
 
+    CACHE_URL: str = Field(..., env="CACHE_URL")
+    CACHE_TABLE: str = Field(..., env="CACHE_TABLE")
+
     DEFAULT_LOGGING_CONFIGURATOR = LoggingDefaultLoggingConfigurator
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
