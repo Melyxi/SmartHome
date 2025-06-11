@@ -2,7 +2,6 @@ import asyncio
 from collections import deque
 
 from aiomqtt import Client
-
 from core.configurate_logging import get_logger
 
 server_logger = get_logger("server")
@@ -12,12 +11,11 @@ server_logger = get_logger("server")
 class AsyncClientZigbeeMQTT:
 
     topic_functions = {}
-
+    messages = deque(maxlen=100)
     def __init__(self, host, port):
         self.host = host
         self.port = port
         self.client = None
-        self.messages = deque(maxlen=100)
         self._task = None
 
     @classmethod

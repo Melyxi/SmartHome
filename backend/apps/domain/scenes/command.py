@@ -7,8 +7,6 @@ class SceneDeviceCommand:
         self.device = device
 
 
-
-
     def state(self, field):
         pass
 

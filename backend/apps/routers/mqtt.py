@@ -1,43 +1,40 @@
 import asyncio
-
-from core.adapter.mqtt_client.commands import MqttCommands
-# from core.extensions import client_mqtt
-from fastapi import APIRouter, WebSocket
-from utils import json
 from collections import deque
+from typing import Annotated
+
+from apps.domain.mqtt.commands import MqttCommands
+from core.adapter.mqtt_client.client import AsyncClientZigbeeMQTT
+from core.dependencies.mqtt import get_mqtt_client
+from fastapi import APIRouter, Depends, WebSocket
+from utils import json
 
 mqtt_router = APIRouter()
 
 @mqtt_router.get("/connect-device")
-async def connect_devices():
-    # print(f'\n########{client_mqtt.messages=}########')
-    # mqtt_command = MqttCommands(client_mqtt.mqtt_client)
-    # mqtt_command.connect_devices()
+async def connect_devices(mqtt_client : Annotated[AsyncClientZigbeeMQTT, Depends(get_mqtt_client)]):
+    mqtt_command = MqttCommands(mqtt_client.client)
+    await mqtt_command.connect_devices()
     return {}
 
+
 @mqtt_router.get("/disconnect-device")
-async def disconnect_devices():
-    # print(f'\n########{client_mqtt.messages=}########')
-    # mqtt_command = MqttCommands(client_mqtt.mqtt_client)
-    # mqtt_command.disable_connect_devices()
+async def disconnect_devices(mqtt_client : Annotated[AsyncClientZigbeeMQTT, Depends(get_mqtt_client)]):
+    mqtt_command = MqttCommands(mqtt_client.client)
+    await mqtt_command.disable_connect_devices()
     return {}
 
 @mqtt_router.get("/event")
-async def bridge_event():
-    # mqtt_command = MqttCommands(client_mqtt.mqtt_client)
-    # mqtt_command.bridge_event()
+async def bridge_event(mqtt_client : Annotated[AsyncClientZigbeeMQTT, Depends(get_mqtt_client)]):
+    mqtt_command = MqttCommands(mqtt_client.client)
+    await mqtt_command.bridge_event()
     return {}
 
 
 @mqtt_router.get("/zigbee-devices")
-async def devices():
-    # mqtt_command = MqttCommands(client_mqtt.mqtt_client)
-    # mqtt_command.devices()
+async def devices(mqtt_client : Annotated[AsyncClientZigbeeMQTT, Depends(get_mqtt_client)]):
+    mqtt_command = MqttCommands(mqtt_client.client)
+    await mqtt_command.devices()
     return {}
-
-# @client_mqtt.mqtt_client.message_callback()
-# def recv_message(client, userdata, msg):
-#     print(f'\n##########MESSAGES !!!!!!! ##########\n')
 
 
 active_connections = []
@@ -49,29 +46,16 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
 
     active_connections.append(websocket)
-
-    print(f'\n########{active_connections=}########')
     try:
-        print(f'\n########START########')
         while True:
-            print(f'\n########START1########')
 
+            messages = AsyncClientZigbeeMQTT.messages
+            AsyncClientZigbeeMQTT.messages = deque(maxlen=100)
 
-
-            # print(f'\n########{client_mqtt.messages=}########')
-
-            # @client_mqtt.mqtt_client.message_callback()
-            # def recv_message(client, userdata, msg):
-            #     print(f'\n##########MESSAGES !!!!!!! ##########\n')
-
-            # messages = client_mqtt.messages
-            # client_mqtt.messages = deque(maxlen=100)
-
-            # if messages:
-            #     for msg in messages:
-            #         print(f'\n########{msg=}########')
-            #         for connection in active_connections:
-            #             await connection.send_text(json.dumps(msg))
+            if messages:
+                for msg in messages:
+                    for connection in active_connections:
+                        await connection.send_text(json.dumps(msg))
 
             await asyncio.sleep(0.01)
 
