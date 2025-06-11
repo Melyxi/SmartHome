@@ -1,4 +1,5 @@
 from aiomqtt import Client
+from utils import json
 
 
 class MqttCommands:
@@ -30,4 +31,9 @@ class MqttCommands:
 
     async def info(self):
         message = await self.client.publish("zigbee2mqtt/bridge/info", '', qos=1)
+        return message
+
+    async def set_data(self, device_name: str, data: dict):
+        message = await self.client.publish(f"zigbee2mqtt/{device_name}/set", json.dumps(data), qos=1)
+        print(f'\n########{message=}########')
         return message

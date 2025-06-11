@@ -13,22 +13,18 @@ from core.templates import mqtt_device_html
 from utils import json
 
 
-async def message_from_device(message):
+async def message_from_device(message, client):
     json_message = json.loads(message.payload)
     device_name = message.topic.value.split('/')[-1]
     mqtt_cache_manager = MqttCacheManager(cache)
     await mqtt_cache_manager.set_history_by_device(device_name, json_message)
 
-    scene_manager = SceneManager(device_name)
+    scene_manager = SceneManager(device_name, client)
 
     await scene_manager.prepare_device()
 
 
-
-
-
-
-async def devices(message):
+async def devices(message, client):
     msg_json = json.loads(message.payload)
     with open(Path(settings.BASE_DIR, "zigbee-devices.json"), "w+", encoding="utf-8") as f:
         json.dump(msg_json, f)

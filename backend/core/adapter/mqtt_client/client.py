@@ -29,7 +29,7 @@ class AsyncClientZigbeeMQTT:
 
     async def on_message(self, message):
         if message_function := self.topic_functions.get(message.topic.value):
-            await message_function(message)
+            await message_function(message, self.client)
         self.messages.append(message.payload.decode())
 
     async def listen_mqtt(self):
