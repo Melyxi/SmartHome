@@ -10,7 +10,10 @@ class MongoDBSCache(BaseCache):
         self.db = self.client[db_name]
 
     async def get(self, key: str) -> dict[str, Any] | None:
-        return await self.db.items.find_one({"_id": key})
+        data = await self.db.items.find_one({"_id": key})
+        if data:
+            del data["_id"]
+        return data
 
     async def set(self, key: str, value: dict[str, Any]) -> None:
         await self.db.items.update_one(

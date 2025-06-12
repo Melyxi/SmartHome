@@ -1,11 +1,10 @@
-from datetime import datetime, timezone
 from pathlib import Path
 
+from apps.domain.mqtt.cache import MqttCacheManager
+from apps.domain.scenes.manager import SceneManager
 from apps.models.device import GetShortDevice
-from apps.repositories.device import DeviceSqlAlchemyRepository
 from configs.config import settings
 from core.adapter.mqtt_client.client import AsyncClientZigbeeMQTT
-from core.dependencies.mqtt import get_mqtt_client
 from core.enums import ProtocolType
 from core.extensions import cache, db
 from core.models.device import Device
@@ -14,51 +13,18 @@ from core.templates import mqtt_device_html
 from utils import json
 
 
-def handle_mytopic(client, userdata, message):
-    # client.subscribe("zigbee2mqtt/bridge/devices")
-    client.subscribe("zigbee2mqtt/bridge/event")
-    client.subscribe("zigbee2mqtt/bridge/devices")
-    print(f'\n########{client=}########')
-    print(f'\n########{userdata=}########')
-    print(f'\n########{message=}########')
-
-# client_mqtt.mqtt_client.message_callback_add("zigbee2mqtt/bridge/response/permit_join", handle_mytopic)
-
-
-def bridge_event(client, userdata, message):
-    print("event")
-    print(f'\n########{client=}########')
-    print(f'\n########{userdata=}########')
-    print(f'\n########{message=}########')
-
-
-# client_mqtt.mqtt_client.message_callback_add("zigbee2mqtt/bridge/response/event", bridge_event)
-async def message_from_device(message):
+async def message_from_device(message, client):
     json_message = json.loads(message.payload)
+    device_name = message.topic.value.split('/')[-1]
+    mqtt_cache_manager = MqttCacheManager(cache)
+    await mqtt_cache_manager.set_history_by_device(device_name, json_message)
 
-    topic = message.topic.value.split('/')[-1]
-    result_msg = {topic: json_message}
+    scene_manager = SceneManager(device_name, client)
 
-    # client_mqtt.messages.append(result_msg)
-
-    utc_now = datetime.now(timezone.utc)
-    timestamp = utc_now.timestamp()
-
-    cache_key = f"device_{topic}"
-    cache_data = await cache.get(cache_key)
-    print(f'\n########{cache_data=}########')
-    await cache.set(f"device_{topic}", {"time": timestamp, "data": json_message})
+    await scene_manager.prepare_device()
 
 
-
-
-    # Добавить в кэш для истории
-    print(f'\n########{message.payload=}########')
-    print(f'\n########{message.topic=}########')
-    print(f'\n########MESSAGE FROM DEVICES########')
-
-
-async def devices(message):
+async def devices(message, client):
     msg_json = json.loads(message.payload)
     with open(Path(settings.BASE_DIR, "zigbee-devices.json"), "w+", encoding="utf-8") as f:
         json.dump(msg_json, f)
@@ -67,7 +33,6 @@ async def devices(message):
 
     with db.sync_session() as session:
         existed_devices = session.query(Device).all()
-    print(f'\n########{existed_devices=}########')
 
     existed_devices = [GetShortDevice.model_validate(device, from_attributes=True) for device in existed_devices]
     existed_devices_names = [device.unique_name for device in existed_devices]

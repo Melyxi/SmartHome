@@ -1,8 +1,9 @@
 import os
 
+from pydantic.v1 import Field
+
 from configs.base_config import Settings
 from core.logging.logging_configurate_logging import LoggingDefaultLoggingConfigurator
-from pydantic.v1 import Field
 
 
 class DevSettings(Settings):
@@ -18,6 +19,9 @@ class DevSettings(Settings):
 
     DEFAULT_LOGGING_CONFIGURATOR = LoggingDefaultLoggingConfigurator
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+    MEDIA_ROOT = "media/"
 
     class Config:
         env_file = ".env/.env.dev"
