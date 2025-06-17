@@ -1,4 +1,5 @@
 from pathlib import Path
+from time import sleep
 
 from apps.domain.mqtt.cache import MqttCacheManager
 from apps.domain.mqtt.commands import MqttCommands
@@ -7,6 +8,10 @@ from configs.config import settings
 from core.extensions import cache, db
 from utils import json
 
+from core.configurate_logging import get_logger
+
+
+scene_logger = get_logger("scene")
 
 class SceneProcess:
 
@@ -19,13 +24,14 @@ class SceneProcess:
 
         with open(script, "r", encoding="utf-8") as file:
             lines = file.readlines()
-
+        lines.insert(0, "sleep(3)\n")
         code = "    ".join(lines)
 
         safe_globals = {
             "__builtins__": {},
             "devices": self.devices,
-            "print": print
+            "print": print,
+            "sleep": sleep
         }
 
         try:
@@ -55,14 +61,21 @@ class SceneManager:
 
     async def prepare_device(self):
         scenes = await self.get_scenes_by_device()
+        scene_map = {}
         for scene in scenes:
             device_map = {}
             for device in scene.devices:
                 device_command = DeviceCommand(device, self.client)
                 await device_command.set_property()
                 device_map[device.unique_name] = device_command
+            scene_map[scene] = device_map
+        return scene_map
 
-            await SceneProcess(scene, device_map).process()
+    async def process_scene(self):
+        scenes = await self.prepare_device()
+        for scene, devices in scenes.items():
+            scene_logger.debug("Launch scene # %s", scene.id)
+            await SceneProcess(scene, devices).process()
 
 
 
@@ -81,11 +94,21 @@ class DeviceCommand:
         if hasattr(self.device, "exposes") and self.device.exposes:
             last_record = await self.get_property_value()
             for expose in json.loads(self.device.exposes):
-                expose_property = expose["property"]
-                property_device = PropertyDevice(expose_property,
-                                                 last_record.get(expose_property),
-                                                 self.device.unique_name, self.client)
-                setattr(self, expose["property"], property_device)
+                expose_property = expose.get("property")
+                if expose_property:
+                    property_device = PropertyDevice(expose_property,
+                                                     last_record.get(expose_property),
+                                                     self.device.unique_name, self.client)
+                    setattr(self, expose_property, property_device)
+                else:
+                    features = expose.get("features")
+                    if features:
+                        for feature in features:
+                            expose_property = feature["property"]
+                            property_device = PropertyDevice(expose_property,
+                                                             last_record.get(expose_property),
+                                                             self.device.unique_name, self.client)
+                            setattr(self, expose_property, property_device)
 
 
 class PropertyDevice:
@@ -100,7 +123,7 @@ class PropertyDevice:
         data = {
             self.property: value
         }
-
+        scene_logger.debug("Use SET with data %s by device %s", json.dumps(data), self.device_name)
         await MqttCommands(self.client).set_data(self.device_name, data)
 
 
