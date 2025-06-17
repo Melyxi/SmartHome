@@ -1,6 +1,6 @@
 from apps.domain.buttons.button import ButtonService
 from apps.domain.utils import populate_buttons
-from apps.models.device import GetDevice, PostDevice
+from apps.models.device import GetDevice, PostDevice, PutDevice
 from apps.repositories.protocol import ProtocolSqlAlchemyRepository
 from core.enums import ProtocolType
 from core.models.device import Device
@@ -22,25 +22,35 @@ class DeviceService(BaseService):
             response.append(self.get_model.model_validate(device, from_attributes=True))
         return response, 200
 
-    async def post(self, device: PostDevice):
+    async def create(self, device: PostDevice):
         device_dict = device.model_dump()
-        await self.validate_post(device_dict)
+        await self.validate_post()
         device = await self.repository.create(**device_dict)
         return {"device": device.id}, 201
 
 
-    async def validate_post(self, device: dict):
-        if not device["html"]:
-            protocol = await ProtocolSqlAlchemyRepository(self.repository.session).get_by_id(device["protocol_id"])
+    async def update(self, _id: int, device: PutDevice):
+        self._properties = device.model_dump()
+        await self.validate_update()
+        device = await self.repository.update(**self._properties)
+        return {"device": device.id}, 201
+
+    async def validate_update(self):
+        pass
+
+
+    async def validate_post(self):
+        if not self._properties["html"]:
+            protocol = await ProtocolSqlAlchemyRepository(self.repository.session).get_by_id(self._properties["protocol_id"])
             if protocol.type is ProtocolType.ZIGBEE:
-                device["html"] = mqtt_device_html
+                self._properties["html"] = mqtt_device_html
             else:
-                device["html"] = device_html
+                self._properties["html"] = device_html
 
-        device["buttons"] = await populate_buttons(device["buttons"])
+        self._properties["buttons"] = await populate_buttons(self._properties["buttons"])
 
-        if not device["unique_name"]:
-            device["unique_name"] = str(device["uuid"])
+        if not self._properties["unique_name"]:
+            self._properties["unique_name"] = str(self._properties["uuid"])
 
     @staticmethod
     def get_exposes(model):

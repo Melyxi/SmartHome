@@ -1,7 +1,7 @@
 import uuid
 
 from core.extensions import db
-from sqlalchemy import UUID, Column, ForeignKey, Integer, String, Table
+from sqlalchemy import UUID, Column, ForeignKey, Integer, String, Table, Boolean
 from sqlalchemy.orm import relationship
 
 scene_device_association = Table(
@@ -21,6 +21,7 @@ class Scene(db.Base):
     description = Column(String(300), nullable=False)
     devices = relationship("Device", secondary=scene_device_association, back_populates="scenes")
     scene = Column(String(500), nullable=True)
+    active = Column(Boolean(), default=True, nullable=False)
 
 
 
