@@ -23,7 +23,17 @@ async def list_devices(session: Annotated[AsyncSession, Depends(get_session)]) -
 async def post(item: PostDevice, session: Annotated[AsyncSession, Depends(get_session)]):
     repository = DeviceSqlAlchemyRepository(session)
     try:
-        response, status = await DeviceService(repository).post(item)
+        response, status = await DeviceService(repository).create(item)
+        return JSONResponse(content=response, status_code=status)
+    except ButtonsNotFoundValidationError:
+        return JSONResponse(content={"detail": "Not found some buttons"}, status_code=422)
+
+
+@devices_router.post("/devices/{device_id}")
+async def post(device_id: int, item: PostDevice, session: Annotated[AsyncSession, Depends(get_session)]):
+    repository = DeviceSqlAlchemyRepository(session)
+    try:
+        response, status = await DeviceService(repository).update()
         return JSONResponse(content=response, status_code=status)
     except ButtonsNotFoundValidationError:
         return JSONResponse(content={"detail": "Not found some buttons"}, status_code=422)
