@@ -11,17 +11,19 @@ from core.models.device import Device
 from core.models.protocol import Protocol
 from core.templates import mqtt_device_html
 from utils import json
+from core.configurate_logging import get_logger
 
+scene_logger = get_logger("scene")
 
 async def message_from_device(message, client):
     json_message = json.loads(message.payload)
     device_name = message.topic.value.split('/')[-1]
+    scene_logger.debug(json_message)
     mqtt_cache_manager = MqttCacheManager(cache)
     await mqtt_cache_manager.set_history_by_device(device_name, json_message)
-
     scene_manager = SceneManager(device_name, client)
 
-    await scene_manager.prepare_device()
+    await scene_manager.process_scene()
 
 
 async def devices(message, client):

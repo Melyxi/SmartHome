@@ -43,3 +43,14 @@ class PostDevice(BaseModel):
 
     protocol_id: int
     buttons: list[int]
+
+
+class PutDevice(BaseModel):
+    name: str
+    unique_name: str
+    description: str | None = ""
+    css: str | None = ""
+    html: str | None = ""
+
+    protocol_id: int
+    buttons: list[int]
