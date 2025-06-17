@@ -1,5 +1,5 @@
 from configs.config import settings
-from core.logging.loguru_configurate_logging import DefaultLoggingConfigurator
+from core.logging.loguru_configurate_logging import LoguruDefaultLoggingConfigurator
 
-default_logging_configurator = settings.get("DEFAULT_LOGGING_CONFIGURATOR", DefaultLoggingConfigurator)
+default_logging_configurator = settings.get("DEFAULT_LOGGING_CONFIGURATOR", LoguruDefaultLoggingConfigurator)
 get_logger = default_logging_configurator.getLogger
