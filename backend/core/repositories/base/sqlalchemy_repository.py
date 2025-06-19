@@ -1,9 +1,9 @@
 from typing import List
 
-from sqlalchemy import select
-
 from core.repositories.base.base import SqlRepositoryAbstract
+from core.repositories.base.exceptions import ModelNotFoundError
 from core.repositories.types import T
+from sqlalchemy import select
 
 
 class AsyncSqlAlchemyRepository(SqlRepositoryAbstract[T]):
@@ -33,12 +33,16 @@ class AsyncSqlAlchemyRepository(SqlRepositoryAbstract[T]):
             return _object
 
     async def update(self, _id: int, **kwargs):
-        _object = await self.get_by_id(_id)
-        for key, value in kwargs.items():
-            setattr(_object, key, value)
-        await self.session.commit()
-        await self.session.refresh(_object)
-        return _object
+        async with self.session.begin():
+
+            _object = await self.get_by_id(_id)
+            if not _object:
+                raise ModelNotFoundError
+
+            for key, value in kwargs.items():
+                setattr(_object, key, value)
+            await self.session.refresh(_object)
+            return _object
 
     async def delete(self, _id: int) -> bool:
         _object = await self.get_by_id(_id)
