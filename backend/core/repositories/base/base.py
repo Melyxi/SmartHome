@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Generic, get_args
+from typing import Generic, List, get_args
 
 from core.extensions import db
 from core.repositories.types import T
@@ -33,7 +33,7 @@ class SqlRepositoryAbstract(ABC, Generic[T]):
         return NotImplementedError
 
     @abstractmethod
-    async def update(self, **kwargs):
+    async def update(self, _id: int, **kwargs):
         return NotImplementedError
 
     @abstractmethod

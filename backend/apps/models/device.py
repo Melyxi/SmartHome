@@ -28,6 +28,7 @@ class GetDevice(BaseModel):
 
     created_at: datetime
     updated_at: datetime
+    exposes: list
 
     class Config:
         orm_mode = True
@@ -45,12 +46,15 @@ class PostDevice(BaseModel):
     buttons: list[int]
 
 
-class PutDevice(BaseModel):
-    name: str
-    unique_name: str
+class PatchDevice(BaseModel):
+    name: str | None = None
+    unique_name: str | None = None
     description: str | None = ""
     css: str | None = ""
     html: str | None = ""
 
-    protocol_id: int
-    buttons: list[int]
+    protocol_id: int | None = None
+    buttons: list[int] | None = None
+
+    class Config:
+        extra = "forbid"
