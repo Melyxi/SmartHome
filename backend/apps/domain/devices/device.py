@@ -2,7 +2,7 @@ from apps.domain.buttons.button import ButtonService
 from apps.domain.devices.exceptions import DeviceNotFoundError
 from apps.domain.exceptions import ButtonsNotFoundValidationError
 from apps.domain.utils import populate_buttons
-from apps.models.device import GetDevice, PostDevice, PutDevice
+from apps.models.device import GetDevice, PostDevice, PatchDevice
 from apps.repositories.protocol import ProtocolSqlAlchemyRepository
 from core.enums import ProtocolType
 from core.models.device import Device
@@ -41,7 +41,7 @@ class DeviceService(BaseService):
         return {"device": device.id}, 201
 
     @validate_db_error
-    async def update(self, _id: int, device: PutDevice):
+    async def update(self, _id: int, device: PatchDevice):
         self._properties = device.model_dump(exclude_unset=True)
         self._model_id = _id
         await self.validate_update()
@@ -101,7 +101,7 @@ class DeviceService(BaseService):
         for button in _model.buttons:
             await ButtonService.build_html(_model=button, context=context)
 
-        html = Template(_model.html).render(**context)
+        built_html = Template(_model.html).render(**context)
 
-        _model.html = html
-        return html
+        _model.built_html = built_html
+        return built_html

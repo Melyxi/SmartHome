@@ -21,6 +21,7 @@ class GetDevice(BaseModel):
     description: str
     css: str
     html: str
+    built_html: str
 
     protocol: GetProtocol
 

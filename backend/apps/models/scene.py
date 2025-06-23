@@ -16,6 +16,19 @@ class GetScene(BaseModel):
     class Config:
         orm_mode = True
 
+class GetSceneWithCode(BaseModel):
+    id: int
+    uuid: uuid.UUID
+    name: str
+    description: str
+    scene: str
+    active: bool
+    code: str
+    # devices: list[int]
+
+    class Config:
+        orm_mode = True
+
 
 class PostScene(BaseModel):
     name: str
@@ -23,6 +36,15 @@ class PostScene(BaseModel):
     scene: UploadFile
     devices: list[int]
     active: bool = True
+
+
+class PatchScene(BaseModel):
+    name: str | None = None
+    description: str = ""
+    scene: UploadFile | None = None
+    devices: list[int] | None = None
+    active: bool = True
+
 
 class PostSceneWithCode(BaseModel):
     name: str

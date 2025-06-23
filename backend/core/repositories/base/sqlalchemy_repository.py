@@ -41,6 +41,9 @@ class AsyncSqlAlchemyRepository(SqlRepositoryAbstract[T]):
 
             for key, value in kwargs.items():
                 setattr(_object, key, value)
+
+            self.session.add(_object)
+            await self.session.flush()
             await self.session.refresh(_object)
             return _object
 
