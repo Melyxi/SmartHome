@@ -32,3 +32,6 @@ class DeviceSqlAlchemyRepository(AsyncSqlAlchemyRepository[Device]):
             )
         )
         return result.scalars().first()
+
+
+

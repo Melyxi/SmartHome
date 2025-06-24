@@ -8,7 +8,7 @@ from core.dependencies.mqtt import get_mqtt_client
 from fastapi import APIRouter, Depends, WebSocket
 from utils import json
 
-mqtt_router = APIRouter()
+mqtt_router = APIRouter(tags=["mqtt"], prefix="/mqtt")
 
 @mqtt_router.get("/connect-device")
 async def connect_devices(mqtt_client : Annotated[AsyncClientZigbeeMQTT, Depends(get_mqtt_client)]):

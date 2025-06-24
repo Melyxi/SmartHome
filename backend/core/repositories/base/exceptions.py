@@ -8,7 +8,7 @@ class DatabaseValidateError(Exception):
 
         self.field: str | None = None
         self.value: str | None = None
-        self.pretty_message: str = ""
+        self.pretty_message: dict = {}
 
         self.parse_error_message()
 

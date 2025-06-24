@@ -13,6 +13,18 @@ class GetShortDevice(BaseModel):
     unique_name: str
     description: str
 
+class ShortGetDevice(BaseModel):
+    id: int
+    uuid: uuid.UUID
+    name: str
+    unique_name: str
+    description: str
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
+
 class GetDevice(BaseModel):
     id: int
     uuid: uuid.UUID
@@ -21,6 +33,7 @@ class GetDevice(BaseModel):
     description: str
     css: str
     html: str
+    built_html: str
 
     protocol: GetProtocol
 

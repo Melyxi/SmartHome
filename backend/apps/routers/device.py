@@ -6,11 +6,12 @@ from apps.domain.exceptions import ButtonsNotFoundValidationError
 from apps.models.device import GetDevice, PatchDevice, PostDevice
 from apps.repositories.device import DeviceSqlAlchemyRepository
 from core.dependencies.db import get_session
+from core.repositories.base.exceptions import DatabaseValidateError
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-devices_router = APIRouter()
+devices_router = APIRouter(tags=["device"])
 
 
 @devices_router.get("/devices")
@@ -35,6 +36,11 @@ async def post(item: PostDevice, session: Annotated[AsyncSession, Depends(get_se
     try:
         response, status = await DeviceService(repository).create(item)
         return JSONResponse(content=response, status_code=status)
+    except DatabaseValidateError as exc:
+        return HTTPException(
+            status_code=400,
+            detail=exc.pretty_message
+        )
     except ButtonsNotFoundValidationError:
         return JSONResponse(content={"detail": "Not found some buttons"}, status_code=422)
 
@@ -45,6 +51,11 @@ async def patch(device_id: int, item: PatchDevice, session: Annotated[AsyncSessi
     try:
         response, status = await DeviceService(repository).update(device_id, item)
         return JSONResponse(content=response, status_code=status)
+    except DatabaseValidateError as exc:
+        return HTTPException(
+            status_code=400,
+            detail=exc.pretty_message
+        )
     except DeviceNotFoundError:
         raise HTTPException(status_code=DeviceNotFoundError.status, detail=DeviceNotFoundError.message)
     except ButtonsNotFoundValidationError:

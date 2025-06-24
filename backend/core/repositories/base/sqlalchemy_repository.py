@@ -33,21 +33,22 @@ class AsyncSqlAlchemyRepository(SqlRepositoryAbstract[T]):
             return _object
 
     async def update(self, _id: int, **kwargs):
-        async with self.session.begin():
-
-            _object = await self.get_by_id(_id)
-            if not _object:
-                raise ModelNotFoundError
-
-            for key, value in kwargs.items():
-                setattr(_object, key, value)
-            await self.session.refresh(_object)
-            return _object
-
-    async def delete(self, _id: int) -> bool:
         _object = await self.get_by_id(_id)
-        self.session.delete(_object)
-        return True
+        if not _object:
+            raise ModelNotFoundError
+
+        for key, value in kwargs.items():
+            setattr(_object, key, value)
+
+        self.session.add(_object)
+        await self.session.flush()
+        await self.session.refresh(_object)
+        return _object
+
+    async def delete(self, _id: int):
+        _object = await self.get_by_id(_id)
+        await self.session.delete(_object)
+        await self.session.commit()
 
     async def bulk_delete(self, ids: List[int]):
         return None

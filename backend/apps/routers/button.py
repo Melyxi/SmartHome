@@ -10,7 +10,7 @@ from fastapi import APIRouter, Depends, WebSocket
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils import json
 
-state_router = APIRouter()
+state_router = APIRouter(tags=["Button"])
 
 
 active_connections = []
