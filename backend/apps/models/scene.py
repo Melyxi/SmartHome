@@ -1,5 +1,6 @@
 import uuid
 
+from apps.models.device import ShortGetDevice
 from fastapi import UploadFile
 from pydantic import BaseModel
 
@@ -11,10 +12,13 @@ class GetScene(BaseModel):
     description: str
     scene: str
     active: bool
-    # devices: list[int]
 
     class Config:
         orm_mode = True
+
+class GetSceneWithDevices(GetScene):
+    devices: list[ShortGetDevice]
+
 
 class GetSceneWithCode(BaseModel):
     id: int
@@ -24,10 +28,12 @@ class GetSceneWithCode(BaseModel):
     scene: str
     active: bool
     code: str
-    # devices: list[int]
 
     class Config:
         orm_mode = True
+
+class GetSceneWithCodeWithDevices(GetSceneWithCode):
+    devices: list[ShortGetDevice]
 
 
 class PostScene(BaseModel):
@@ -43,8 +49,14 @@ class PatchScene(BaseModel):
     description: str = ""
     scene: UploadFile | None = None
     devices: list[int] | None = None
-    active: bool = True
+    active: bool | None = None
 
+class PatchSceneWithCode(BaseModel):
+    name: str | None = None
+    description: str = ""
+    code: str | None = None
+    devices: list[int] | None = None
+    active: bool = True
 
 class PostSceneWithCode(BaseModel):
     name: str

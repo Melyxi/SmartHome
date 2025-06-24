@@ -44,11 +44,12 @@ class AppInitializer:
         from apps.routers.mqtt import mqtt_router
         from apps.routers.scene import scenes_router
 
+        prefix_version = "/api/v1"
 
         routers = [devices_router, state_router, mqtt_router, scenes_router]
 
         for router in routers:
-            self.app.include_router(router)
+            self.app.include_router(router, prefix=prefix_version)
 
         logger.info("Initialization routers!")
 

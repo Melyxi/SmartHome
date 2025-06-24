@@ -15,3 +15,12 @@ class SceneSqlAlchemyRepository(AsyncSqlAlchemyRepository[Scene]):
 
         result = await self.session.execute(query)
         return result.scalars().all()
+
+    async def get_scene_with_devices_by_id(self, _id: int, only_scene_fields: bool = False):
+        query = select(Scene).where(Scene.id == _id)
+
+        if not only_scene_fields:
+            query = query.join(Scene.devices).options(selectinload(Scene.devices))
+
+        result = await self.session.execute(query)
+        return result.scalars().first()

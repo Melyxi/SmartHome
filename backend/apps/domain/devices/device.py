@@ -2,7 +2,7 @@ from apps.domain.buttons.button import ButtonService
 from apps.domain.devices.exceptions import DeviceNotFoundError
 from apps.domain.exceptions import ButtonsNotFoundValidationError
 from apps.domain.utils import populate_buttons
-from apps.models.device import GetDevice, PostDevice, PatchDevice
+from apps.models.device import GetDevice, PatchDevice, PostDevice
 from apps.repositories.protocol import ProtocolSqlAlchemyRepository
 from core.enums import ProtocolType
 from core.models.device import Device
