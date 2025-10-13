@@ -4,7 +4,6 @@ from core.cache.base.backend import BaseCache
 
 
 class MqttCacheManager:
-
     device_topic = "device_"
 
     def __init__(self, cache: BaseCache):
@@ -27,12 +26,9 @@ class MqttCacheManager:
         timestamp = utc_now.timestamp()
 
         cache_data = await self.get_history_by_device(device_name)
-
         if cache_data is None:
             cache_data = {"history": {str(timestamp): data}}
         else:
             cache_data["history"][str(timestamp)] = data
 
         await self.cache.set(f"{self.device_topic}{device_name}", cache_data)
-
-

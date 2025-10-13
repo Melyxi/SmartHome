@@ -6,10 +6,11 @@ from apps.domain.mqtt.task import shutdown_mqtt, startup_mqtt
 from core.adapter.tasks import shutdown_event, startup_event
 from fastapi import FastAPI
 from initialization.cache.tasks import shutdown_cache, startup_cache
-
+# from core.backends.telegram import telegram_bot_shutdown_event, telegram_bot_startup_event
+# startup_tasks = [startup_mqtt, sync_create_devices, startup_event, startup_cache, telegram_bot_startup_event]
+# shutdown_tasks = [shutdown_mqtt, shutdown_event, shutdown_cache, telegram_bot_shutdown_event]
 startup_tasks = [startup_mqtt, sync_create_devices, startup_event, startup_cache]
 shutdown_tasks = [shutdown_mqtt, shutdown_event, shutdown_cache]
-
 
 def initialization_tasks(kwargs):
     @asynccontextmanager

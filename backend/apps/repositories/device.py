@@ -33,5 +33,6 @@ class DeviceSqlAlchemyRepository(AsyncSqlAlchemyRepository[Device]):
         )
         return result.scalars().first()
 
-
-
+    async def get_devices_by_names(self, names: list[str]) -> list[Device]:
+        result = await self.session.execute(select(Device).filter(Device.unique_name.in_(names)))
+        return result.scalars().all()

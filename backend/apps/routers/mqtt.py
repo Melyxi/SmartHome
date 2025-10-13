@@ -56,11 +56,12 @@ async def websocket_endpoint(websocket: WebSocket):
                 for msg in messages:
                     for connection in active_connections:
                         await connection.send_text(json.dumps(msg))
-
-            await asyncio.sleep(0.01)
+                await asyncio.sleep(0.01)
+            await asyncio.sleep(0.1)
 
     except Exception as e:
         print(f"Ошибка: {e}")
+        raise e
     finally:
         active_connections.remove(websocket)  # Удаляем клиента из списка при отключении
         print("Клиент отключился")
