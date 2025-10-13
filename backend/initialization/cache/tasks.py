@@ -1,8 +1,8 @@
 from core.extensions import cache
 
 
-async def startup_cache(app):
+async def cache_startup_event(app):
     app.state.cache = cache
 
-async def shutdown_cache(app):
+async def cache_shutdown_event(app):
     await app.state.cache.close()

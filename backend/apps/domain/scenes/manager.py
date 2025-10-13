@@ -32,7 +32,7 @@ class SceneProcess:
         lines.insert(0, "await asyncio.sleep(0.1)\n")
         code = "    ".join(lines)
 
-        # from adapters.notifications.telegram import TelegramNotification
+        from adapters.notifications.telegram import TelegramNotification
 
         safe_globals = {
             "__builtins__": {},
@@ -40,7 +40,7 @@ class SceneProcess:
             "print": print,
             "sleep": sleep,
             "asyncio": asyncio,
-            # "telegram": TelegramNotification
+            "telegram": TelegramNotification
         }
 
 
