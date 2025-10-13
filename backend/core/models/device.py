@@ -4,7 +4,7 @@ from core.extensions import db
 from core.models.association import device_button_association
 from core.models.scene import scene_device_association
 from core.templates import device_html
-from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, func
+from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import relationship
 
 
@@ -17,8 +17,8 @@ class Device(db.Base):
 
     name = Column(String(50), nullable=False)
     description = Column(String(300), nullable=False)
-    css = Column(String(2000), default="", nullable=False)
-    html = Column(String(2000), default=device_html, nullable=False)
+    css = Column(Text, default="", nullable=False)
+    html = Column(Text, default=device_html, nullable=False)
 
     protocol_id = Column(Integer, ForeignKey("protocols.id"), nullable=False)
     protocol = relationship("Protocol", back_populates="devices")

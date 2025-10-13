@@ -1,4 +1,4 @@
-import time
+import asyncio
 
 from apps.domain.protocols.protocol import ProtocolFactory
 from apps.models.state import WebsocketData
@@ -28,7 +28,6 @@ async def websocket_endpoint(
     active_connections.append(websocket)
     try:
         while True:
-            st = time.monotonic()
             data = await websocket.receive_text()
             data = json.loads(data)
             websocket_data = WebsocketData(**data)
@@ -41,22 +40,14 @@ async def websocket_endpoint(
             else:
                 state = states_connection[websocket_data.id]
 
-            print(f"\n########{websocket_data.protocol=}########")
-            print(f"\n########{state.id=}########")
-            print(f"\n########{state.time=}########")
-            print(f"\n########{state.data=}########")
             protocol = ProtocolFactory(websocket_data.protocol, state.data, state.time)
             data_bytes = await protocol.build()
 
             await transmitter.send(data_bytes)
-
-            print(f"\n########{data_bytes=}########")
-            print(f"\n########{time.monotonic() - st=}########")
-            for connection in active_connections:
-                await connection.send_text(f"Сервер получил: 111")
+            await asyncio.sleep(0.01)
 
     except Exception as e:
         print(f"Ошибка: {e}")
     finally:
-        active_connections.remove(websocket)  # Удаляем клиента из списка при отключении
+        active_connections.remove(websocket)
         print("Клиент отключился")

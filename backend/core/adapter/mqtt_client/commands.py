@@ -27,22 +27,18 @@ class MqttCommands:
 
 
     def bridge_event(self):
-        print(f'\n########bridge_event########')
         message = self.connection.publish("zigbee2mqtt/bridge/event", '{"type":"device_interview"}', qos=1)
         self.unacked_publish.add(message.mid)
         self.wait_message(message)
         return message
 
     def devices(self):
-        print(f'\n########devices########')
-        # client.publish("zigbee2mqtt/bridge/request/permit_join", '{"value": true}')
         message = self.connection.publish("zigbee2mqtt/bridge/request/permit_join", '', qos=1)
         self.unacked_publish.add(message.mid)
         self.wait_message(message)
         return message
 
     def health_check(self):
-        print(f'\n########health_check########')
         message = self.connection.publish("zigbee2mqtt/bridge/request/health_check", '', qos=1)
         self.unacked_publish.add(message.mid)
         self.wait_message(message)
@@ -51,7 +47,6 @@ class MqttCommands:
 
 
     def info(self):
-        print(f'\n########info########')
         message = self.connection.publish("zigbee2mqtt/bridge/info", '', qos=1)
         self.unacked_publish.add(message.mid)
         self.wait_message(message)
