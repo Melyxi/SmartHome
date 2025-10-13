@@ -1,10 +1,10 @@
 import os
 
-from pydantic.v1 import Field
-
 from configs.base_config import Settings
+
 # from core.logging.logging_configurate_logging import LoggingDefaultLoggingConfigurator
 from core.logging.loguru_configurate_logging import LoguruDefaultLoggingConfigurator
+from pydantic.v1 import Field
 
 
 class DevSettings(Settings):
@@ -17,6 +17,7 @@ class DevSettings(Settings):
 
     CACHE_URL: str = Field(..., env="CACHE_URL")
     CACHE_TABLE: str = Field(..., env="CACHE_TABLE")
+    TELEGRAM_BOT_TOKEN: str | None = Field(None, env="TELEGRAM_BOT_TOKEN")
 
     # DEFAULT_LOGGING_CONFIGURATOR = LoggingDefaultLoggingConfigurator
     DEFAULT_LOGGING_CONFIGURATOR = LoguruDefaultLoggingConfigurator
