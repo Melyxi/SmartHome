@@ -9,6 +9,8 @@ from configs.config import settings
 from core.configurate_logging import get_logger
 
 logger = get_logger("server")
+
+
 def create_bot() -> Bot | None:
     if settings.TELEGRAM_BOT_TOKEN:
         return Bot(token=settings.TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -51,7 +53,6 @@ async def telegram_bot_shutdown_event(app):
         for task in background_tasks:
             task.cancel()
         await asyncio.gather(*background_tasks, return_exceptions=True)
-
 
 
 @dp.message(CommandStart())
