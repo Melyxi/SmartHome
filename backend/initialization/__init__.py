@@ -3,6 +3,7 @@ from pathlib import Path
 from configs.config import settings
 from core.adapter.mqtt_client.client import AsyncClientZigbeeMQTT
 from core.configurate_logging import get_logger
+
 # from core.extensions import client_mqtt
 from core.logging.loguru_configurate_logging import LoguruDefaultLoggingConfigurator
 
@@ -15,6 +16,7 @@ class AppInitializer:
 
     def init_zigbee_devices(self):
         pass
+
     #     client_mqtt.mqtt_client.subscribe("zigbee2mqtt/bridge/devices")
 
     def init_media_root(self):
@@ -34,6 +36,7 @@ class AppInitializer:
 
     def init_messages(self) -> None:
         from apps.domain.mqtt.messages import router_message
+
         AsyncClientZigbeeMQTT.topic_functions.update(router_message)
         # for key, value in router_message.items():
         #     AsyncClientZigbeeMQTT.message_callback_add(key, value)
@@ -41,12 +44,13 @@ class AppInitializer:
     def init_routers(self) -> None:
         from apps.routers.button import state_router
         from apps.routers.device import devices_router
+        from apps.routers.history import history_router
         from apps.routers.mqtt import mqtt_router
         from apps.routers.scene import scenes_router
 
         prefix_version = "/api/v1"
 
-        routers = [devices_router, state_router, mqtt_router, scenes_router]
+        routers = [devices_router, state_router, mqtt_router, scenes_router, history_router]
 
         for router in routers:
             self.app.include_router(router, prefix=prefix_version)

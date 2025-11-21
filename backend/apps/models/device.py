@@ -13,6 +13,7 @@ class GetShortDevice(BaseModel):
     unique_name: str
     description: str
 
+
 class ShortGetDevice(BaseModel):
     id: int
     uuid: uuid.UUID
@@ -71,3 +72,8 @@ class PatchDevice(BaseModel):
 
     class Config:
         extra = "forbid"
+
+
+class DeviceExposesSchema(BaseModel):
+    exposes: str
+    unique_name: str
