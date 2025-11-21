@@ -1,3 +1,4 @@
+from apps.models.device import DeviceExposesSchema
 from core.models.button import Button
 from core.models.device import Device
 from core.repositories.base.sqlalchemy_repository import AsyncSqlAlchemyRepository
@@ -36,3 +37,8 @@ class DeviceSqlAlchemyRepository(AsyncSqlAlchemyRepository[Device]):
     async def get_devices_by_names(self, names: list[str]) -> list[Device]:
         result = await self.session.execute(select(Device).filter(Device.unique_name.in_(names)))
         return result.scalars().all()
+
+
+    async def get_devices_expose_by_names(self, names: list[str]) -> list[DeviceExposesSchema]:
+        result = await self.session.execute(select(Device.exposes, Device.unique_name).filter(Device.unique_name.in_(names)))
+        return result.mappings().all()
