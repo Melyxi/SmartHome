@@ -6,8 +6,9 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from configs.config import settings
+from core.configurate_logging import get_logger
 
-
+logger = get_logger("server")
 def create_bot() -> Bot | None:
     if settings.TELEGRAM_BOT_TOKEN:
         return Bot(token=settings.TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -29,10 +30,10 @@ async def run_polling_non_blocking():
         try:
             await dp.start_polling(bot, handle_signals=False)
         except asyncio.CancelledError:
-            print("Polling was cancelled")
+            logger.error("Polling was cancelled")
             raise
         except Exception as e:
-            print(f"Polling failed: {e}")
+            logger.error("Polling failed: {}", e)
             raise
 
 
