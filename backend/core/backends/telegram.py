@@ -6,6 +6,9 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from configs.config import settings
+from core.configurate_logging import get_logger
+
+logger = get_logger("server")
 
 
 def create_bot() -> Bot | None:
@@ -29,10 +32,10 @@ async def run_polling_non_blocking():
         try:
             await dp.start_polling(bot, handle_signals=False)
         except asyncio.CancelledError:
-            print("Polling was cancelled")
+            logger.error("Polling was cancelled")
             raise
         except Exception as e:
-            print(f"Polling failed: {e}")
+            logger.error("Polling failed: {}", e)
             raise
 
 
@@ -50,7 +53,6 @@ async def telegram_bot_shutdown_event(app):
         for task in background_tasks:
             task.cancel()
         await asyncio.gather(*background_tasks, return_exceptions=True)
-
 
 
 @dp.message(CommandStart())
