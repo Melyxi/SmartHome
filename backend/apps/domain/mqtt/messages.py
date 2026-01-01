@@ -1,4 +1,3 @@
-import asyncio
 from pathlib import Path
 
 from apps.domain.mqtt.cache import MqttCacheManager
@@ -8,13 +7,15 @@ from configs.config import settings
 from core.adapter.mqtt_client.client import AsyncClientZigbeeMQTT
 from core.configurate_logging import get_logger
 from core.enums import ProtocolType
-from core.extensions import cache, db
 from core.models.device import Device
 from core.models.protocol import Protocol
 from core.templates import mqtt_device_html
+from dependencies.broker import get_kafka_producer
+from extensions import cache, db
 from utils import json
 
 scene_logger = get_logger("scene")
+server_logger = get_logger("server")
 
 
 async def scene_run(device_name, client, message):
@@ -27,23 +28,27 @@ async def add_history_to_cache(device_name, json_message):
     await mqtt_cache_manager.set_history_by_device(device_name, json_message)
 
 
-background_tasks = set()
+# background_tasks = set()
 
 
 async def message_from_device(topic, message, client):
     json_message = json.loads(message)
     device_name = topic.split("/")[-1]
-
-    scene_run_task = asyncio.create_task(scene_run(device_name, client, json_message))
-    add_history_to_cache_task = asyncio.create_task(add_history_to_cache(device_name, json_message))
-
-    background_tasks.add(scene_run_task)
-    background_tasks.add(add_history_to_cache_task)
-
-    scene_run_task.add_done_callback(background_tasks.discard)
-    add_history_to_cache_task.add_done_callback(background_tasks.discard)
-
     scene_logger.debug(json_message)
+
+    server_logger.debug("Device name is {}, Message from device {}.", device_name, json_message)
+
+    producer = await get_kafka_producer()
+    await producer.send_and_wait(f"mqtt_device_{device_name}", message)
+
+    # scene_run_task = asyncio.create_task(scene_run(device_name, client, json_message))
+    # add_history_to_cache_task = asyncio.create_task(add_history_to_cache(device_name, json_message))
+    #
+    # background_tasks.add(scene_run_task)
+    # background_tasks.add(add_history_to_cache_task)
+    #
+    # scene_run_task.add_done_callback(background_tasks.discard)
+    # add_history_to_cache_task.add_done_callback(background_tasks.discard)
 
 
 async def devices(topic, message, client):

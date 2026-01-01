@@ -16,6 +16,7 @@ class GetScene(BaseModel):
     class Config:
         orm_mode = True
 
+
 class GetSceneWithDevices(GetScene):
     devices: list[ShortGetDevice]
 
@@ -31,6 +32,7 @@ class GetSceneWithCode(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class GetSceneWithCodeWithDevices(GetSceneWithCode):
     devices: list[ShortGetDevice]
@@ -51,6 +53,7 @@ class PatchScene(BaseModel):
     devices: list[int] | None = None
     active: bool | None = None
 
+
 class PatchSceneWithCode(BaseModel):
     name: str | None = None
     description: str = ""
@@ -58,11 +61,10 @@ class PatchSceneWithCode(BaseModel):
     devices: list[int] | None = None
     active: bool = True
 
+
 class PostSceneWithCode(BaseModel):
     name: str
     description: str = ""
     code: str
     devices: list[int]
     active: bool = True
-
-

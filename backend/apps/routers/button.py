@@ -4,8 +4,8 @@ from apps.domain.protocols.protocol import ProtocolFactory
 from apps.models.state import WebsocketData
 from apps.repositories.state import StateSqlAlchemyRepository
 from core.adapter.transmitter_interface import ClientInterface
-from core.dependencies.db import get_session
-from core.dependencies.transmitter import get_transmitter
+from dependencies.db import get_session
+from dependencies.transmitter import get_transmitter
 from fastapi import APIRouter, Depends, WebSocket
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils import json
@@ -20,8 +20,8 @@ states_connection: dict = {}
 @state_router.websocket("/button")
 async def websocket_endpoint(
     websocket: WebSocket,
-    session: AsyncSession = Depends(get_session),
-    transmitter: ClientInterface = Depends(get_transmitter),
+    session: AsyncSession = Depends(get_session),  # noqa: B008
+    transmitter: ClientInterface = Depends(get_transmitter),  # noqa: B008
 ):
     await websocket.accept()
 

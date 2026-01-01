@@ -1,16 +1,18 @@
 import sys
 from pathlib import Path
 
-from loguru import logger
-
 from core.logging import BaseLogger
+from loguru import logger
 
 
 class LoguruDefaultLoggingConfigurator(BaseLogger):
-
-
     def get_console_format(self):
-        return "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+        return (
+            "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>"
+            "{level: <8}</level> | <cyan>{name}</cyan>:<cyan>"
+            "{function}</cyan>:<cyan>{line}</cyan> - <level>{message}"
+            "</level>"
+        )
 
     def get_format(self):
         return "{time} {level} {message}"
@@ -29,7 +31,7 @@ class LoguruDefaultLoggingConfigurator(BaseLogger):
             format=self.get_console_format(),
             filter=lambda r: r["extra"].get("logger_type") in ["server", "scene"],
             colorize=True,
-            level=self.log_level
+            level=self.log_level,
         )
 
         logger.add(
@@ -39,12 +41,10 @@ class LoguruDefaultLoggingConfigurator(BaseLogger):
             level=self.log_level,
             format=self.get_console_format(),
             filter=lambda r: r["extra"].get("logger_type") == "scene",
-            encoding="utf-8"
+            encoding="utf-8",
         )
 
-
-
     @classmethod
-    def getLogger(cls, type_logger: str):
+    def getLogger(cls, type_logger: str):  # noqa: N802
         log = logger.bind(logger_type=type_logger)
         return log

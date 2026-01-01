@@ -11,10 +11,18 @@ class MqttCacheManager:
 
     async def get_one_record_by_device(self, device_name: str) -> dict:
         cache_data = await self.cache.get(f"{self.device_topic}{device_name}")
-        cache_data = cache_data["history"]
-        latest_timestamp = max(map(float, cache_data.keys()))
-        latest_entry = cache_data[str(latest_timestamp)]
-        return latest_entry
+        if cache_data:
+            cache_data = cache_data["history"]
+            latest_timestamp = max(map(float, cache_data.keys()))
+            latest_entry = cache_data[str(latest_timestamp)]
+            return latest_entry
+        return {}
+
+    async def last_record(self, device_name, position=1):
+        device_data = await self.get_history_by_device(device_name)
+        history = device_data["history"]
+        history = dict(zip(list(history.keys())[-position:], list(history.values())[-position:]))
+        return history if history else {}
 
     async def get_history_by_device(self, device_name: str) -> dict:
         cache_data = await self.cache.get(f"{self.device_topic}{device_name}")

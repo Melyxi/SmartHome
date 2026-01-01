@@ -1,9 +1,9 @@
 import uuid
 
-from core.extensions import db
 from core.models.association import device_button_association
 from core.models.scene import scene_device_association
 from core.templates import device_html
+from extensions import db
 from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import relationship
 
@@ -16,12 +16,12 @@ class Device(db.Base):
     unique_name = Column(String(100), unique=True, nullable=False)
 
     name = Column(String(50), nullable=False)
-    description = Column(String(300), nullable=False)
+    description = Column(String(300), nullable=False, default="")
     css = Column(Text, default="", nullable=False)
     html = Column(Text, default=device_html, nullable=False)
 
     protocol_id = Column(Integer, ForeignKey("protocols.id"), nullable=False)
-    protocol = relationship("Protocol", back_populates="devices")
+    protocol = relationship("Protocol", back_populates="devices", lazy="joined")
 
     buttons = relationship("core.models.button.Button", secondary=device_button_association, back_populates="devices")
     scenes = relationship("Scene", secondary=scene_device_association, back_populates="devices")

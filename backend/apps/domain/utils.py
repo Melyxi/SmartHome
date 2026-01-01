@@ -1,9 +1,9 @@
 from apps.domain.exceptions import ButtonsNotFoundValidationError, DevicesNotFoundValidationError
 from apps.repositories.button import ButtonSqlAlchemyRepository
 from apps.repositories.device import DeviceSqlAlchemyRepository
-from core.extensions import db
 from core.models.button import Button
 from core.models.device import Device
+from extensions import db
 
 
 async def populate_buttons(button_ids: list[int] | None) -> list[Button] | None:
@@ -15,6 +15,7 @@ async def populate_buttons(button_ids: list[int] | None) -> list[Button] | None:
         if len(button_ids) != len(buttons):
             raise ButtonsNotFoundValidationError
     return buttons
+
 
 async def populate_devices(device_ids: list[int] | None) -> list[Device] | None:
     devices: list[Button] = []

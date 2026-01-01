@@ -23,7 +23,6 @@ class AsyncSqlAlchemyRepository(SqlRepositoryAbstract[T]):
         result = await self.session.execute(select(self.model_cls).filter_by(**kwargs))
         return result.scalars().all()
 
-
     async def create(self, **kwargs):
         async with self.session.begin():
             _object = self.model_cls(**kwargs)

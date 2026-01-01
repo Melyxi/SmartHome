@@ -56,7 +56,7 @@ class DeviceService(BaseService):
         # Validate model exists
         button_ids = self._properties.get("buttons")
 
-        #Validate/Populate buttons
+        # Validate/Populate buttons
         try:
             if button_ids:
                 buttons = await populate_buttons(button_ids)
@@ -64,10 +64,11 @@ class DeviceService(BaseService):
         except ButtonsNotFoundValidationError:
             raise ButtonsNotFoundValidationError
 
-
     async def validate_post(self):
         if not self._properties["html"]:
-            protocol = await ProtocolSqlAlchemyRepository(self.repository.session).get_by_id(self._properties["protocol_id"])
+            protocol = await ProtocolSqlAlchemyRepository(self.repository.session).get_by_id(
+                self._properties["protocol_id"]
+            )
             if protocol.type is ProtocolType.ZIGBEE:
                 self._properties["html"] = mqtt_device_html
             else:
@@ -81,7 +82,7 @@ class DeviceService(BaseService):
     @staticmethod
     def get_exposes(model):
         try:
-            exposes =  json.loads(model.exposes)
+            exposes = json.loads(model.exposes)
         except JSONDecodeError:
             exposes = []
 

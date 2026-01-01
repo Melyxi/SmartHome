@@ -1,7 +1,5 @@
-from core.extensions import db
-from sqlalchemy import Column
-from sqlalchemy import String
-from sqlalchemy import Integer
+from extensions import db
+from sqlalchemy import Column, Integer, String
 
 
 class User(db.Base):

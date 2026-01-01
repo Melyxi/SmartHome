@@ -1,9 +1,10 @@
-from enum import Enum
+from enum import Enum, StrEnum
 
 
-class ProtocolType(Enum):
+class ProtocolType(StrEnum):
     RADIO_433MHz = "RADIO_433MHz"
     ZIGBEE = "ZIGBEE"
+    MODULE = "MODULE"
 
 
 class ButtonType(Enum):

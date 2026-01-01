@@ -1,7 +1,7 @@
 import uuid
 
-from core.extensions import db
 from core.models.association import device_button_association
+from extensions import db
 from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, Table, func
 from sqlalchemy.orm import relationship
 

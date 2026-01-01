@@ -1,9 +1,8 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel
-
 from apps.models.state import GetState
+from pydantic import BaseModel
 
 
 class GetMetaButton(BaseModel):

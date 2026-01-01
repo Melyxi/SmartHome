@@ -3,9 +3,8 @@ from pathlib import Path
 from configs.config import settings
 from core.adapter.mqtt_client.client import AsyncClientZigbeeMQTT
 from core.configurate_logging import get_logger
-
-# from core.extensions import client_mqtt
 from core.logging.loguru_configurate_logging import LoguruDefaultLoggingConfigurator
+from initialization.modules_registration import ModuleRegistry
 
 logger = get_logger("server")
 
@@ -13,11 +12,10 @@ logger = get_logger("server")
 class AppInitializer:
     def __init__(self, app):
         self.app = app
+        self.app.config = settings
 
     def init_zigbee_devices(self):
         pass
-
-    #     client_mqtt.mqtt_client.subscribe("zigbee2mqtt/bridge/devices")
 
     def init_media_root(self):
         media_root = settings.get("MEDIA_ROOT")
@@ -33,6 +31,14 @@ class AppInitializer:
             else:
                 media_path = Path(settings.BASE_DIR, media_root, upload_scene_dir)
                 media_path.mkdir(parents=True, exist_ok=True)
+
+    @staticmethod
+    def register_custom_modules():
+        logger.info("Adding modules!")
+        module_register = ModuleRegistry()
+        module_register.add_module_path()
+        module_register.create_modules()
+        logger.info("Adding modules finished")
 
     def init_messages(self) -> None:
         from apps.domain.mqtt.messages import router_message
@@ -78,4 +84,5 @@ class AppInitializer:
         self.init_routers()
         self.init_messages()
         self.init_zigbee_devices()
+        self.register_custom_modules()
         self.post_init()

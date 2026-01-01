@@ -4,13 +4,13 @@ from pathlib import Path
 
 from core.logging import BaseLogger
 
-class LoggingDefaultLoggingConfigurator(BaseLogger):
 
+class LoggingDefaultLoggingConfigurator(BaseLogger):
     def get_format(self):
         return "{time} {level} {message}"
 
     def configurate_logging_config(self) -> dict:
-        LOGGING_CONFIG = {
+        logging_config = {
             "version": 1,
             "disable_existing_loggers": False,
             "formatters": {
@@ -32,8 +32,7 @@ class LoggingDefaultLoggingConfigurator(BaseLogger):
                     "when": "D",
                     "interval": 30,
                     "backupCount": 12,
-                }
-
+                },
             },
             "loggers": {
                 "server": {
@@ -46,16 +45,14 @@ class LoggingDefaultLoggingConfigurator(BaseLogger):
                     "handlers": ["console", "file_scene"],
                     "propagate": False,
                 },
-
             },
         }
-        return LOGGING_CONFIG
-
+        return logging_config
 
     def init_logging(self):
         logging.config.dictConfig(self.configurate_logging_config())
 
     @classmethod
-    def getLogger(cls, type_logger):
+    def getLogger(cls, type_logger):  # noqa: N802
         log = logging.getLogger(type_logger)
         return log

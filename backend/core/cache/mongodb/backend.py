@@ -16,9 +16,7 @@ class MongoDBSCache(BaseCache):
         return data
 
     async def set(self, key: str, value: dict[str, Any]) -> None:
-        await self.db.items.update_one(
-            {"_id": key}, {"$set": value}, upsert=True
-        )
+        await self.db.items.update_one({"_id": key}, {"$set": value}, upsert=True)
 
     async def delete(self, key: str) -> bool:
         result = await self.db.items.delete_one({"_id": key})
