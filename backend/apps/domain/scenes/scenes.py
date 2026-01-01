@@ -43,7 +43,6 @@ class SceneService(BaseService):
         response = GetSceneWithDevices.model_validate(scene, from_attributes=True)
         return response, 200
 
-
     async def get_scene_with_code(self, _id: int):
         scene = await self.repository.get_scene_with_devices_by_id(_id)
         if not scene:
@@ -67,8 +66,9 @@ class SceneService(BaseService):
         await self.validate_create()
         try:
             scene = await self.repository.create(**self._properties)
-            devices = [ShortGetDevice.model_validate(device, from_attributes=True)
-                       for device in self._properties["devices"]]
+            devices = [
+                ShortGetDevice.model_validate(device, from_attributes=True) for device in self._properties["devices"]
+            ]
         except IntegrityError:
             await self.__delete_file(self._properties["scene"])
             raise
@@ -112,8 +112,9 @@ class SceneService(BaseService):
             del self._properties["code"]
 
             scene = await self.repository.create(**self._properties)
-            devices = [ShortGetDevice.model_validate(device, from_attributes=True)
-                       for device in self._properties["devices"]]
+            devices = [
+                ShortGetDevice.model_validate(device, from_attributes=True) for device in self._properties["devices"]
+            ]
             scene.code = code
         except IntegrityError:
             await self.__delete_file(self._properties["scene"])
@@ -124,10 +125,8 @@ class SceneService(BaseService):
 
     @staticmethod
     async def build_full_file_path(filename: str, is_relevant_path: bool = False) -> Path:
-
         if not is_relevant_path:
-            full_file_path = Path(settings.BASE_DIR, settings.MEDIA_ROOT,
-                                settings.UPLOAD_SCENE_DIR, filename)
+            full_file_path = Path(settings.BASE_DIR, settings.MEDIA_ROOT, settings.UPLOAD_SCENE_DIR, filename)
         else:
             full_file_path = Path(settings.BASE_DIR, settings.MEDIA_ROOT, filename)
 
@@ -150,18 +149,15 @@ class SceneService(BaseService):
         relevant_path = Path(settings.UPLOAD_SCENE_DIR, filename)
         return str(relevant_path)
 
-
     async def validate_create(self):
         self._properties["devices"] = await populate_devices(self._properties["devices"])
         relevant_path = await self.__upload_file(self._properties["scene"])
         self._properties["scene"] = relevant_path
 
-
     async def __get_code_from_file(self, file_path: str) -> str:
         with open(Path(settings.BASE_DIR, settings.MEDIA_ROOT, file_path)) as f:
             code = f.read()
         return code
-
 
     async def __save_code_in_file(self, code: str) -> str:
         file_name = f"scene_{uuid.uuid4()}_{datetime.now().strftime('%Y-%m-%d_%H_%M_%S')}"
@@ -173,19 +169,16 @@ class SceneService(BaseService):
 
         return str(Path(settings.UPLOAD_SCENE_DIR, file_name))
 
-
     async def __update_code_in_file(self, code: str, relevant_path: str):
         full_file_path = await self.build_full_file_path(relevant_path, is_relevant_path=True)
         with open(full_file_path, "w") as file:
             file.write(code)
-
 
     async def validate_with_ast(self, code: str):
         try:
             ast.parse(code)
         except SyntaxError:
             raise FileSyntaxError
-
 
     async def validate_create_with_code(self):
         self._properties["devices"] = await populate_devices(self._properties["devices"])
@@ -200,13 +193,11 @@ class SceneService(BaseService):
         file_path = Path(settings.BASE_DIR, settings.MEDIA_ROOT, path)
         file_path.unlink(missing_ok=True)
 
-
     async def __update_file(self, file: UploadFile):
         old_file = self._model.scene
         scene = await self.__upload_file(file)
         self._properties["scene"] = scene
         await self.__delete_file(old_file)
-
 
     async def validate_update(self):
         # Validate model exists

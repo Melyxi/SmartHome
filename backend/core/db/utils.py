@@ -1,4 +1,4 @@
-from sqlalchemy.engine.url import make_url, URL
+from sqlalchemy.engine.url import URL, make_url
 
 
 def make_url_safe(raw_url: str | URL) -> URL:
@@ -13,7 +13,7 @@ def make_url_safe(raw_url: str | URL) -> URL:
     if isinstance(raw_url, str):
         url = raw_url.strip()
         try:
-            return make_url(url)  # noqa
+            return make_url(url)
         except Exception as ex:
             raise ex
 

@@ -1,6 +1,6 @@
 import uuid
 
-from core.extensions import db
+from extensions import db
 from sqlalchemy import UUID, Column, DateTime, Integer, String, func
 from sqlalchemy.orm import relationship
 

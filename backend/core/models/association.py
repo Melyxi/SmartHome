@@ -1,4 +1,4 @@
-from core.extensions import db
+from extensions import db
 from sqlalchemy import Column, ForeignKey, Integer, Table
 
 device_button_association = Table(

@@ -2,8 +2,8 @@ from typing import Any
 
 from apps.domain.mqtt.cache import MqttCacheManager
 from apps.models.history import ColumnPropertiesSchema, HistoryDataQuerySchema, HistoryDataResponseSchema
-from core.extensions import cache as backend_cache
 from core.services.base.service import BaseService
+from extensions import cache as backend_cache
 from utils import json
 
 

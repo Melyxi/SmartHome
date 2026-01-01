@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Generic, List, get_args
 
-from core.extensions import db
 from core.repositories.types import T
+from extensions import db
 
 
 class SqlRepositoryAbstract(ABC, Generic[T]):

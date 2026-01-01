@@ -10,7 +10,7 @@ DEBUG = os.environ.get("DEBUG", False) == "True"
 load_settings = DevSettings if DEBUG else ProdSettings
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> Settings:
     return load_settings()
 

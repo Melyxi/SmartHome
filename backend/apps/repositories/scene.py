@@ -2,15 +2,20 @@ from core.models.device import Device
 from core.models.scene import Scene
 from core.repositories.base.sqlalchemy_repository import AsyncSqlAlchemyRepository
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import joinedload, selectinload
 
 
 class SceneSqlAlchemyRepository(AsyncSqlAlchemyRepository[Scene]):
-
-    async def get_scenes_with_device_by_unique_name(self, device_unique_name: str, only_scene_fields: bool = False)\
-            -> list[Scene]:
-        query = select(Scene).join(Scene.devices).where(Device.unique_name == device_unique_name, Scene.active == True)
-
+    async def get_scenes_with_device_by_unique_name(
+        self, device_unique_name: str, only_scene_fields: bool = False
+    ) -> list[Scene]:
+        query = (
+            select(Scene)
+            .join(Scene.devices)
+            .where(Device.unique_name == device_unique_name, Scene.active is True)
+            .options(selectinload(Scene.devices).options(joinedload(Device.protocol)))
+            .distinct()
+        )
         if not only_scene_fields:
             query = query.options(selectinload(Scene.devices))
 

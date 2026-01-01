@@ -1,10 +1,9 @@
 import uuid
 
-from sqlalchemy import Column, UUID, LargeBinary, Integer, String, Float
-from sqlalchemy.orm import relationship
-
-from core.extensions import db
 from core.models.button import button_state_association
+from extensions import db
+from sqlalchemy import UUID, Column, Float, Integer, LargeBinary, String
+from sqlalchemy.orm import relationship
 
 
 class State(db.Base):

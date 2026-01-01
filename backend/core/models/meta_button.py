@@ -1,11 +1,10 @@
-from sqlalchemy.orm import relationship
-from core.extensions import db
-from sqlalchemy import Column, UUID, DateTime, func, ForeignKey, Table
-from sqlalchemy import String, Integer
 import uuid
 
 from core.models.button import Button
 from core.templates import meta_button_html
+from extensions import db
+from sqlalchemy import UUID, Column, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class MetaButton(db.Base):
@@ -23,10 +22,10 @@ class MetaButton(db.Base):
 
     async def to_json(self):
         return {
-            "id": getattr(self, "id"),
-            "uuid": getattr(self, "uuid"),
-            "name": getattr(self, "name"),
-            "css": getattr(self, "css"),
-            "html": getattr(self, "html"),
-            "type": getattr(self, "type"),
+            "id": self.id,
+            "uuid": self.uuid,
+            "name": self.name,
+            "css": self.css,
+            "html": self.html,
+            "type": self.type,
         }

@@ -1,10 +1,10 @@
 from core.enums import ButtonType, ProtocolType
-from core.extensions import db
 from core.models.button import Button
 from core.models.device import Device
 from core.models.meta_button import MetaButton
 from core.models.protocol import Protocol
 from core.models.state import State
+from extensions import db
 from sqlalchemy.exc import IntegrityError
 
 protocols = [
@@ -19,8 +19,14 @@ protocols = [
         "name": "Radio wave 433MHz",
         "description": "Radio wave 433MHz",
         "type": ProtocolType.RADIO_433MHz.value,
-    }
-    ]
+    },
+    {
+        "uuid": "857897c8-3cfa-4076-ae13-89d7d241a890",
+        "name": "Modules",
+        "description": "Attaching modules",
+        "type": ProtocolType.MODULE.value,
+    },
+]
 
 meta_button = {
     "uuid": "6767f186-d729-4bfa-8e03-eaa76ef9a418",

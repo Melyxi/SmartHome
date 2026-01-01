@@ -2,13 +2,12 @@ import decimal
 import logging
 import uuid
 from datetime import date, datetime, time, timedelta
-from typing import Any, Callable, Optional, Union, IO
+from typing import IO, Any, Callable, Optional, Union
 
 import numpy as np
 import pandas as pd
 import simplejson
 from simplejson import JSONDecodeError
-
 
 logger = logging.getLogger(__name__)
 
@@ -166,6 +165,7 @@ def dumps(  # pylint: disable=too-many-arguments
         )
     return results_string
 
+
 def dump(  # pylint: disable=too-many-arguments
     obj: Any,
     fp: IO[str],
@@ -178,17 +178,17 @@ def dump(  # pylint: disable=too-many-arguments
     cls: Union[type[simplejson.JSONEncoder], None] = None,
 ) -> None:
     return simplejson.dump(
-            obj,
-            fp,
-            default=default,
-            allow_nan=allow_nan,
-            ignore_nan=ignore_nan,
-            sort_keys=sort_keys,
-            indent=indent,
-            separators=separators,
-            cls=cls,
-            encoding=None,
-        )
+        obj,
+        fp,
+        default=default,
+        allow_nan=allow_nan,
+        ignore_nan=ignore_nan,
+        sort_keys=sort_keys,
+        indent=indent,
+        separators=separators,
+        cls=cls,
+        encoding=None,
+    )
 
 
 def loads(

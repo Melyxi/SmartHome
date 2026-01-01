@@ -1,10 +1,9 @@
 import contextlib
 
-from sqlalchemy.exc import IntegrityError
-
 from apps.repositories.protocol import ProtocolSqlAlchemyRepository
 from core.enums import ProtocolType
-from core.extensions import db
+from extensions import db
+from sqlalchemy.exc import IntegrityError
 
 protocols = [
     {

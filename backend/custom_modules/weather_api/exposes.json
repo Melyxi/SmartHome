@@ -1,0 +1,58 @@
+[
+  {
+      "access": 5,
+      "description": "Measured temperature value",
+      "label": "Temperature",
+      "name": "current_temperature",
+      "property": "current_temperature",
+      "type": "numeric",
+      "unit": "\u00b0C"
+  },
+  {
+      "access": 5,
+      "description": "Measured relative humidity",
+      "label": "Humidity",
+      "name": "humidity",
+      "property": "humidity",
+      "type": "numeric",
+      "unit": "%"
+  },
+  {
+    "access": 7,
+    "description": "City where is measured weather",
+    "label": "City",
+    "name": "city",
+    "property": "city",
+    "type": "text",
+    "unit": "\u00b0C"
+  },
+  {
+    "access": 5,
+    "description": "Last update weather time",
+    "label": "Last updated",
+    "name": "last_updated",
+    "property": "last_updated",
+    "type": "time"
+  },
+  {
+    "access": 7,
+    "description": "Time of request weather api",
+    "label": "Refresh time",
+    "name": "refresh_time",
+    "property": "refresh_time",
+    "type": "numeric",
+    "unit": "Sec"
+  },
+  {
+    "access": 7,
+    "description": "The unit of the temperature displayed on the device screen.",
+    "label": "Temperature display mode",
+    "name": "temperature_display_mode",
+    "property": "temperature_display_mode",
+    "type": "enum",
+    "values": [
+      "celsius",
+      "fahrenheit"
+    ]
+  }
+]
