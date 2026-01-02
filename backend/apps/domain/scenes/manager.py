@@ -132,10 +132,8 @@ class SceneManager:
         scenes = await self.get_scenes_by_device()
         scene_map = {}
         map_scene_devices = await self._prepare_devices(scenes)
-
         for scene in scenes:
             device_map = {}
-
             for device in scene.devices + map_scene_devices[scene]:
                 if device.unique_name == self.device_name:
                     device_command = DeviceCommand(device, self.client, self.message)
@@ -197,7 +195,6 @@ class DeviceCommand:
 
     async def set_cache(self, key: str, data: dict):
         cache_key = f"{self.device.uuid}_{key}"
-        print(f"\n########{data=}########")
         await SceneCacheManager(backend_cache).set(cache_key, data)
 
     async def get_cache(self, key: str):

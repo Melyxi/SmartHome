@@ -12,7 +12,7 @@ class SceneSqlAlchemyRepository(AsyncSqlAlchemyRepository[Scene]):
         query = (
             select(Scene)
             .join(Scene.devices)
-            .where(Device.unique_name == device_unique_name, Scene.active is True)
+            .where(Device.unique_name == device_unique_name, Scene.active == True)
             .options(selectinload(Scene.devices).options(joinedload(Device.protocol)))
             .distinct()
         )
