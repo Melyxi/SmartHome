@@ -13,6 +13,8 @@ background_tasks = set()
 
 
 class SmartHomeConsumer:
+    topic_prefix = ["mqtt_device_", "custom_module_set_"]
+
     def __init__(self, host: str = "localhost", port: str = "29092"):
         self.bootstrap_servers = f"{host}:{port}"
         self.consumer = None
@@ -57,14 +59,17 @@ class SmartHomeConsumer:
             finally:
                 await self.stop()
 
-    @staticmethod
-    async def _process_message(message: ConsumerRecord) -> None:
+    def _get_device_name(self, topic: str) -> str:
         device_name = ""
+        for prefix in self.topic_prefix:
+            if prefix in topic:
+                device_name = topic.split(prefix)[-1]
+                break
+        return device_name
+
+    async def _process_message(self, message: ConsumerRecord) -> None:
         message_topic = message.topic
-        if "mqtt_device_" in message_topic:
-            device_name = message_topic.split("mqtt_device_")[-1]
-        elif "custom_module_set_" in message_topic:
-            device_name = message_topic.split("custom_module_set_")[-1]
+        device_name = self._get_device_name(message_topic)
 
         if device_name:
             json_message = json.loads(message.value)
@@ -72,10 +77,10 @@ class SmartHomeConsumer:
             server_logger.info("Receive message in main loop. Topic: {}, message: {}", message_topic, json_message)
 
             scene_run_task = asyncio.create_task(scene_run(device_name, client_mqtt.client, json_message))
-            add_history_to_cache_task = asyncio.create_task(add_history_to_cache(device_name, json_message))
+            # add_history_to_cache_task = asyncio.create_task(add_history_to_cache(device_name, json_message))
 
             background_tasks.add(scene_run_task)
-            background_tasks.add(add_history_to_cache_task)
+            # background_tasks.add(add_history_to_cache_task)
 
             scene_run_task.add_done_callback(background_tasks.discard)
-            add_history_to_cache_task.add_done_callback(background_tasks.discard)
+            # add_history_to_cache_task.add_done_callback(background_tasks.discard)
