@@ -1,0 +1,28 @@
+include:
+  # - ./mongodb/docker-compose.yaml
+  - ./kafka/docker-compose.yaml
+  - ./zigbee-mqtt/docker-compose.yaml
+  - ./backend/docker-compose.yaml
+
+# Общая сеть для всех включенных сервисов
+networks:
+  smarthome-network:
+    name: smarthome-network
+    
+services:
+  backend:
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://XXXXXXX:XXXXXXXXX@172.17.0.1:5432/XXXXXXX
+      - TRANSMITTER_HOST=0.0.0.0
+      - TRANSMITTER_PORT=8000
+      - MQTT_HOST=smart-home-mqtt
+      - MQTT_PORT=1883
+      - CACHE_URL=mongodb://root:example@172.17.0.1:27017
+      - CACHE_TABLE=table1
+      - BROKER_HOST=kafka
+      - BROKER_PORT=9092
+      - CUSTOM_MODULE_SETTING_PATH=.custom_settings
+    depends_on:
+      - kafka
+      - smart-home-zigbee2mqtt
+      - smart-home-mqtt
