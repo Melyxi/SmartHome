@@ -6,9 +6,11 @@ from weather_api.main import MainWeatherManager
 
 
 async def startup_event(app: FastAPI) -> None:
-    main_manager = MainWeatherManager(app)
-    app.state.weather_api = asyncio.create_task(main_manager.background_worker())
-
+    try:
+        main_manager = MainWeatherManager(app)
+        app.state.weather_api = asyncio.create_task(main_manager.background_worker())
+    except Exception:
+       print("Something went wrong") 
 
 async def shutdown_event(app: FastAPI) -> None:
     if hasattr(app.state, "weather_api"):

@@ -10,7 +10,7 @@ async def startup_event(app):
         await app.state.transmitter.connect()
         logger.info("Transmitter is initialization")
     except ConnectionRefusedError as ex:
-        print(ex)
+        print(f"Transmitter error: {ex}")
 
 
 async def shutdown_event(app):
